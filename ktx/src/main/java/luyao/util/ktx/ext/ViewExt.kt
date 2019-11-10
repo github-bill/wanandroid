@@ -10,7 +10,6 @@ import android.view.ViewTreeObserver
 import android.widget.ImageView
 import androidx.annotation.Px
 import androidx.annotation.RequiresApi
-import androidx.core.view.drawToBitmap
 
 /**
  * Created by luyao
@@ -183,4 +182,25 @@ fun View.clickN(count: Int = 1, interval: Long = 1000, action: () -> Unit) {
             action()
         }
     }
+}
+
+
+fun View.singleClick(clickEventFun: () -> Unit) {
+    setOnClickListener {
+        if (isFastClick()) {
+            return@setOnClickListener
+        }
+        clickEventFun.invoke()
+    }
+}
+
+var singleLastClickTime = 0L
+fun isFastClick(): Boolean {
+    val time = System.currentTimeMillis()
+    val timeStamp = time - singleLastClickTime
+    if (timeStamp in 1..500) {
+        return true
+    }
+    singleLastClickTime = time
+    return false
 }
