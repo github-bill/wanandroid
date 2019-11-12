@@ -1,0 +1,137 @@
+ext {
+    androids = [
+            compileSdkVersion: project.compileSdkVersion as int,
+            buildToolsVersion: project.buildToolsVersion as String,
+            minSdkVersion    : project.minSdkVersion as int,
+            targetSdkVersion : project.targetSdkVersion as int,
+            versionCode      : project.versionCode as int,
+            versionName      : project.versionName as String,
+            applicationId    : project.applicationId as String
+    ]
+
+    versions = [
+            gradle                       : '3.5.2',
+
+            kotlin                       : "1.3.50",
+            kotlin_coroutines            : "1.3.0",
+
+            lifecycle                    : "2.2.0-rc02",
+            room                         : "2.1.0-alpha06",
+            navigation                   : "2.1.0-alpha02",
+            paging                       : "2.1.0",
+
+            support                      : "1.0.0",
+            design                       : "1.0.0-rc01",
+            constraint                   : "1.1.3",
+            flexbox                      : "1.1.0",
+            swiperefresh                 : "1.1.0-alpha03",
+            circleimageview              : "3.0.1",
+            banner                       : "1.4.10",
+            flowlayout                   : "1.1.2",
+
+            retrofit                     : "2.6.2",
+            okhttp                       : "3.14.3",
+            stetho                       : "1.5.1",
+            persistent_cookiejar         : "v1.0.1",
+
+            koin                         : "2.0.1",
+            arouter                      : "1.5.0",
+            arouter_compiler             : "1.2.2",
+            glide                        : "4.10.0",
+            glide_transformations        : "4.1.0",
+            material_dialogs             : "3.1.1",
+            baserecyclerviewadapterhelper: "2.9.40",
+
+            autosize                     : "1.1.2",
+            leakcanary                   : "1.6.2",
+            debug_db                     : "1.0.6",
+
+            junit                        : "4.12",
+            espresso                     : "3.1.0",
+            espresso_test                : "1.1.0",
+            robolectric                  : "3.3.2"
+    ]
+
+
+    depends = [
+            //Kotlin
+            kotlin_stdlib                : "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${versions.kotlin}",
+            kotlin_reflect               : "org.jetbrains.kotlin:kotlin-reflect:${versions.kotlin}",
+            kotlin_coroutines            : "org.jetbrains.kotlinx:kotlinx-coroutines-android:${versions.kotlin_coroutines}",
+
+            //Jetpack
+            lifecycle_extensions         : "androidx.lifecycle:lifecycle-extensions:${versions.lifecycle}",
+            lifecycle_java8              : "androidx.lifecycle:lifecycle-common-java8:${versions.lifecycle}",
+            viewmodel                    : "androidx.lifecycle:lifecycle-viewmodel:${versions.lifecycle}",
+            viewmodel_ktx                : "androidx.lifecycle:lifecycle-viewmodel-ktx:${versions.lifecycle}",
+            livedata                     : "androidx.lifecycle:lifecycle-livedata:${versions.lifecycle}",
+            livedata_ktx                 : "androidx.lifecycle:lifecycle-livedata-ktx:${versions.lifecycle}",
+            navigation                   : "androidx.navigation:navigation-fragment:${versions.navigation}",
+            navigation_ui                : "androidx.navigation:navigation-ui:${versions.navigation}",
+            paging                       : "androidx.paging:paging-runtime:${versions.paging}",
+            room                         : "androidx.room:room-runtime:${versions.room}",
+            room_ktx                     : "androidx.room:room-ktx:${versions.room}",
+            room_test                    : "androidx.room:room-testing:${versions.room}",
+
+            //Widget
+            appcompat                    : "androidx.appcompat:appcompat:${versions.support}",
+            recyclerview                 : "androidx.recyclerview:recyclerview:${versions.support}",
+            swiperefresh                 : "androidx.swiperefreshlayout:swiperefreshlayout:${versions.swiperefresh}",
+            cardview                     : "androidx.cardview:cardview:${versions.support}",
+            annotations                  : "androidx.annotation:annotation:${versions.support}",
+            support_v4                   : "androidx.legacy:legacy-support-v4:${versions.support}",
+            support_v13                  : "androidx.legacy:legacy-support-v13:${versions.support}",
+            design                       : "com.google.android.material:material:${versions.design}",
+            constraint                   : "androidx.constraintlayout:constraintlayout:${versions.constraint}",
+            flexbox                      : "com.google.android:flexbox:${versions.flexbox}",
+            circleimageview              : "de.hdodenhof:circleimageview:${versions.circleimageview}",
+            banner                       : "com.youth.banner:banner:${versions.banner}",
+            flowlayout                   : "com.hyman:flowlayout-lib:${versions.flowlayout}",
+
+            //NetWork
+            retrofit                     : "com.squareup.retrofit2:retrofit:${versions.retrofit}",
+            retrofit_gson                : "com.squareup.retrofit2:converter-gson:${versions.retrofit}",
+            okhttp                       : "com.squareup.okhttp3:okhttp:${versions.okhttp}",
+            okhttp_logging               : "com.squareup.okhttp3:logging-interceptor:${versions.okhttp}",
+            stetho                       : "com.facebook.stetho:stetho:${versions.stetho}",
+            stetho_okhttp3               : "com.facebook.stetho:stetho-okhttp3:${versions.stetho}",
+            persistent_cookiejar         : "com.github.franmontiel:PersistentCookieJar:${versions.persistent_cookiejar}",
+
+            //DI
+            koin                         : "org.koin:koin-androidx-scope:${versions.koin}",
+            koin_viewmodel               : "org.koin:koin-androidx-viewmodel:${versions.koin}",
+            koin_ext                     : "org.koin:koin-androidx-ext:${versions.koin}",
+            koin_scope                   : "org.koin:koin-android-scope:${versions.koin}",
+
+            //Tools
+            arouter                      : "com.alibaba:arouter-api:${versions.arouter}",
+            glide                        : "com.github.bumptech.glide:glide:${versions.glide}",
+            glide_integration            : "com.github.bumptech.glide:okhttp3-integration:${versions.glide}",
+            glide_transformations        : "jp.wasabeef:glide-transformations:${versions.glide_transformations}",
+            material_dialogs_core        : "com.afollestad.material-dialogs:core:${versions.material_dialogs}",
+            baserecyclerviewadapterhelper: "com.github.CymChad:BaseRecyclerViewAdapterHelper:${versions.baserecyclerviewadapterhelper}",
+
+            autosize                     : "me.jessyan:autosize:${versions.autosize}",
+            leakcanary_debug             : "com.squareup.leakcanary:leakcanary-android:${versions.leakcanary}",
+            leakcanary_debug_support     : "com.squareup.leakcanary:leakcanary-support-fragment:${versions.leakcanary}",
+            leakcanary_release           : "com.squareup.leakcanary:leakcanary-android-no-op:${versions.leakcanary}",
+            debug_db                     : "com.amitshekhar.android:debug-db:${versions.debug_db}",
+
+            //Test
+            junit                        : "junit:junit:${versions.junit}",
+            espresso_core                : "androidx.test.espresso:espresso-core:${versions.espresso}",
+            espresso_contrib             : "androidx.test.espresso:espresso-contrib:${versions.espresso}",
+            espresso_idling_resource     : "androidx.test.espresso:espresso-idling-resource:${versions.espresso}",
+            espresso_test_runner         : "androidx.test:runner:${versions.espresso_test}",
+            espresso_test_rules          : "androidx.test:rules:${versions.espresso_test}",
+            robolectric                  : "org.robolectric:robolectric:${versions.robolectric}",
+            robolectric_v4               : "org.robolectric:shadows-support-v4:${versions.robolectric}"
+    ]
+
+    processors = [
+            arouter  : "com.alibaba:arouter-compiler:${versions.arouter_compiler}",
+            glide    : "com.github.bumptech.glide:compiler:${versions.glide}",
+            room     : "androidx.room:room-compiler:${versions.room}",
+            lifecycle: "androidx.lifecycle:lifecycle-compiler:${versions.lifecycle}"
+    ]
+}

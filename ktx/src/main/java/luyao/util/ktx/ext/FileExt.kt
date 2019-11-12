@@ -1,7 +1,6 @@
 package luyao.util.ktx.ext
 
-import luyao.util.ktx.core.func.*
-import luyao.util.ktx.core.util.getMimeType
+import luyao.util.ktx.core.util.*
 import java.io.File
 import java.nio.charset.Charset
 
@@ -93,7 +92,12 @@ fun File.moveToWithProgress(
     func: ((file: File, i: Int) -> Unit)? = null
 ) {
 
-    if (isDirectory) copyFolder(this, File(destFolder, name), overwrite, func)
+    if (isDirectory) copyFolder(
+        this,
+        File(destFolder, name),
+        overwrite,
+        func
+    )
     else copyFile(this, File(destFolder, name), overwrite, func)
 
     if (!reserve) deleteRecursively()

@@ -4,8 +4,8 @@ import android.text.Html
 import com.bumptech.glide.Glide
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
-import luyao.util.ktx.ext.fromN
-import luyao.wanandroid.App
+import luyao.util.ktx.base.BaseApplication
+import luyao.util.ktx.core.util.fromN
 import luyao.wanandroid.R
 import luyao.wanandroid.model.bean.Article
 
@@ -23,6 +23,6 @@ class ProjectAdapter(layoutResId: Int = R.layout.item_project) : BaseQuickAdapte
                 .setText(R.id.projectTime, item.niceDate)
                 .setImageResource(R.id.articleStar, if (item.collect) R.drawable.timeline_like_pressed else R.drawable.timeline_like_normal)
                 .addOnClickListener(R.id.articleStar)
-        Glide.with(App.CONTEXT).load(item.envelopePic).into(helper.getView(R.id.projectImg))
+        Glide.with(BaseApplication.instance).load(item.envelopePic).into(helper.getView(R.id.projectImg))
     }
 }

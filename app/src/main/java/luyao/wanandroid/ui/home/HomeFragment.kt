@@ -7,9 +7,8 @@ import com.chad.library.adapter.base.BaseQuickAdapter
 import com.youth.banner.BannerConfig
 import kotlinx.android.synthetic.main.fragment_home.*
 import luyao.util.ktx.base.BaseVMFragment
-import luyao.util.ktx.ext.dp2px
+import luyao.util.ktx.ext.view.dp2px
 import luyao.util.ktx.ext.startKtxActivity
-import luyao.util.ktx.ext.toast
 import luyao.wanandroid.R
 import luyao.wanandroid.adapter.HomeArticleAdapter
 import luyao.wanandroid.model.bean.ArticleList
@@ -21,7 +20,6 @@ import luyao.wanandroid.util.Preference
 import luyao.wanandroid.view.CustomLoadMoreView
 import luyao.wanandroid.view.SpaceItemDecoration
 import onNetError
-import retrofit2.HttpException
 
 
 /**

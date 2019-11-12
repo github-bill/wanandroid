@@ -16,9 +16,7 @@ open class BaseViewModel : ViewModel(), LifecycleObserver {
 
 
     private fun launchOnUI(block: suspend CoroutineScope.() -> Unit) {
-
         viewModelScope.launch { block() }
-
     }
 
     suspend fun <T> launchOnIO(block: suspend CoroutineScope.() -> T) {

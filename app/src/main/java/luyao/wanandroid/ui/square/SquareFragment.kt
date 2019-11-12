@@ -2,12 +2,9 @@ package luyao.wanandroid.ui.square
 
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.afollestad.materialdialogs.MaterialDialog
-import com.afollestad.materialdialogs.customview.customView
-import com.afollestad.materialdialogs.input.input
 import kotlinx.android.synthetic.main.fragment_square.*
 import luyao.util.ktx.base.BaseVMFragment
-import luyao.util.ktx.ext.dp2px
+import luyao.util.ktx.ext.view.dp2px
 import luyao.util.ktx.ext.startKtxActivity
 import luyao.wanandroid.R
 import luyao.wanandroid.adapter.SquareAdapter

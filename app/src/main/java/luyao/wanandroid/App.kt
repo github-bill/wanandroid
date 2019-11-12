@@ -1,26 +1,22 @@
 package luyao.wanandroid
 
-import android.app.Application
-import android.content.Context
 import android.util.Log
 import com.tencent.smtt.sdk.QbSdk
+import luyao.util.ktx.base.BaseApplication
 import luyao.wanandroid.model.bean.User
-import kotlin.properties.Delegates
 
 /**
  * Created by luyao
  * on 2018/3/13 13:35
  */
-class App : Application() {
+class App : BaseApplication() {
 
     companion object {
-        var CONTEXT: Context by Delegates.notNull()
         lateinit var CURRENT_USER: User
     }
 
     override fun onCreate() {
         super.onCreate()
-        CONTEXT = applicationContext
 
         //x5内核初始化接口
         QbSdk.initX5Environment(applicationContext, object : QbSdk.PreInitCallback {

@@ -16,7 +16,7 @@ import luyao.util.ktx.Ktx
 import luyao.util.ktx.core.span.KtxBulletSpan.Companion.STANDARD_BULLET_RADIUS
 import luyao.util.ktx.core.span.KtxQuoteSpan.Companion.STANDARD_GAP_WIDTH_PX
 import luyao.util.ktx.core.span.KtxQuoteSpan.Companion.STANDARD_STRIPE_WIDTH_PX
-import luyao.util.ktx.ext.fromP
+import luyao.util.ktx.core.util.fromP
 
 /**
  * Created by luyao

@@ -4,7 +4,7 @@ package luyao.util.ktx.ext;
  * Created by luyao
  * on 2019/9/20 15:49
  */
-public class TransformUtils {
+public class TransformUtil {
     public static int bytes2Int(byte[] bytes) {
         if (null == bytes || bytes.length == 0) return 0;
         return (((bytes[0] & 0XFF) << 24)

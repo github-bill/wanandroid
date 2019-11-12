@@ -5,7 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
+import com.alibaba.android.arouter.launcher.ARouter
 
 /**
  * Created by luyao
@@ -17,6 +17,7 @@ abstract class BaseVMActivity<VM : BaseViewModel> : AppCompatActivity(), Lifecyc
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        ARouter.getInstance().inject(this)
         initVM()
         startObserve()
         setContentView(getLayoutResId())
@@ -43,11 +44,4 @@ abstract class BaseVMActivity<VM : BaseViewModel> : AppCompatActivity(), Lifecyc
     }
 
     open fun onError(e: Throwable) {}
-
-    override fun onDestroy() {
-        mViewModel.let {
-            lifecycle.removeObserver(it)
-        }
-        super.onDestroy()
-    }
 }

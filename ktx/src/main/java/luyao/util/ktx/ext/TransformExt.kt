@@ -34,32 +34,32 @@ fun ByteArray.toHexString(): String {
 /**
  * byte array to int
  */
-fun ByteArray.toInt(): Int = TransformUtils.bytes2Int(this)
+fun ByteArray.toInt(): Int = TransformUtil.bytes2Int(this)
 
 /**
  * int to byte array
  */
-fun Int.toByteArray(): ByteArray = TransformUtils.int2Bytes(this)
+fun Int.toByteArray(): ByteArray = TransformUtil.int2Bytes(this)
 
 /**
  * byte array to short
  */
-fun ByteArray.toShort(): Short = TransformUtils.bytes2Short(this)
+fun ByteArray.toShort(): Short = TransformUtil.bytes2Short(this)
 
 /**
  * short to byte array
  */
-fun Short.toByteArray(): ByteArray = TransformUtils.short2Bytes(this)
+fun Short.toByteArray(): ByteArray = TransformUtil.short2Bytes(this)
 
 /**
  * byte array to long
  */
-fun ByteArray.toLong(): Long = TransformUtils.bytes2Long(this)
+fun ByteArray.toLong(): Long = TransformUtil.bytes2Long(this)
 
 /**
  * long to byte array
  */
-fun Long.toByteArray(): ByteArray = TransformUtils.long2Bytes(this)
+fun Long.toByteArray(): ByteArray = TransformUtil.long2Bytes(this)
 
 /**
  * bitmap to byte array

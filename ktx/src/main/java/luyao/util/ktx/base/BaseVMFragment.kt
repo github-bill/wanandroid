@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 
 /**
  * Created by luyao
@@ -41,15 +41,10 @@ abstract class BaseVMFragment<VM : BaseViewModel> : androidx.fragment.app.Fragme
 
     private fun initVM() {
         providerVMClass()?.let {
-            mViewModel = ViewModelProviders.of(this).get(it)
+            mViewModel = ViewModelProvider(this).get(it)
             lifecycle.addObserver(mViewModel)
         }
     }
 
     open fun providerVMClass(): Class<VM>? = null
-
-    override fun onDestroy() {
-        lifecycle.removeObserver(mViewModel)
-        super.onDestroy()
-    }
 }

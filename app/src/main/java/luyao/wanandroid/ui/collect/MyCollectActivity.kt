@@ -6,7 +6,7 @@ import com.chad.library.adapter.base.BaseQuickAdapter
 import kotlinx.android.synthetic.main.activity_collect.*
 import kotlinx.android.synthetic.main.title_layout.*
 import luyao.util.ktx.base.BaseVMActivity
-import luyao.util.ktx.ext.dp2px
+import luyao.util.ktx.ext.view.dp2px
 import luyao.util.ktx.ext.startKtxActivity
 import luyao.util.ktx.ext.toast
 import luyao.wanandroid.R

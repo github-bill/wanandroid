@@ -2,24 +2,28 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
-apply plugin: 'com.novoda.bintray-release'
 
 android {
-    compileSdkVersion 28
-
+    compileSdkVersion androids.compileSdkVersion
+    buildToolsVersion androids.buildToolsVersion
 
     defaultConfig {
-        minSdkVersion 15
-        targetSdkVersion 28
-        versionCode 1
-        versionName "1.0"
+        minSdkVersion androids.minSdkVersion
+        targetSdkVersion androids.targetSdkVersion
+        versionCode androids.versionCode
+        versionName androids.versionName
 
+        multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-
     }
 
     buildTypes {
         release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            resValue("string", "PORT_NUMBER", "8081")
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
@@ -33,82 +37,90 @@ android {
     dataBinding {
         enabled true
     }
+}
 
+kapt {
+    arguments {
+        arg("AROUTER_MODULE_NAME", project.getName())
+    }
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    api 'androidx.appcompat:appcompat:1.1.0'
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test:runner:1.2.0'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
-    api "androidx.core:core-ktx:1.2.0-alpha04"
-    api "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    api 'com.afollestad.material-dialogs:core:3.1.0'
-    api "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.0"
-    api "androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0-alpha04"
-    api 'androidx.lifecycle:lifecycle-extensions:2.2.0-alpha04'
-    api 'androidx.recyclerview:recyclerview:1.1.0-beta04'
+    //test
+    testImplementation depends.junit
+    androidTestImplementation depends.espresso_test_runner
+    androidTestImplementation depends.espresso_core
+    //http://localhost:8081/ 数据库调试 adb forward tcp:8081 tcp:8081
+    debugImplementation depends.debug_db
+
+    // kotlin
+    api depends.kotlin_stdlib
+    api depends.kotlin_reflect
+    api depends.kotlin_coroutines
+//    api "androidx.core:core-ktx:1.2.0-beta02"
+
+    //aac
+    api depends.lifecycle_extensions
+    api depends.lifecycle_java8
+    api depends.viewmodel
+    api depends.viewmodel_ktx
+    api depends.livedata
+    api depends.livedata_ktx
+    api depends.navigation
+    api depends.navigation_ui
+    api depends.paging
+    api depends.room
+    api depends.room_ktx
+
+    // support
+    api depends.appcompat
+    api depends.design
+
+    //widget
+    api depends.constraint
+    api depends.recyclerview
+    api depends.cardview
+    api depends.swiperefresh
+    api depends.circleimageview
+    api depends.banner
+    api depends.flowlayout
+    api depends.flexbox
+
+    //tool
+    api depends.material_dialogs_core
+    api depends.arouter
+    api depends.glide
+    api depends.glide_integration
+    api depends.glide_transformations
+    api depends.autosize
+    api depends.baserecyclerviewadapterhelper
+
+    // di
+    api depends.koin
+    api depends.koin_viewmodel
+    api depends.koin_ext
+    api depends.koin_scope
+
+    //network
+    api depends.retrofit
+    api depends.retrofit_gson
+    api depends.okhttp
+    api depends.okhttp_logging
+    api depends.stetho
+    api depends.stetho_okhttp3
+    api depends.persistent_cookiejar
+
+    // leakcanary
+    debugApi depends.leakcanary_debug
+    debugApi depends.leakcanary_debug_support
+    releaseApi depends.leakcanary_release
+
+    // processor
+    kapt processors.arouter
+    annotationProcessor processors.room
+    annotationProcessor processors.lifecycle
+    kapt processors.glide
 }
 
-repositories {
-    mavenCentral()
-}
-
-
-if (project.hasProperty("kotlin")) {
-    // Disable creating javadocs
-    tasks.withType(Javadoc) {
-        enabled = false
-    }
-}
-
-//生成源文件
-task sourcesJar(type: Jar) {
-    from android.sourceSets.main.java.srcDirs
-    classifier = 'sources'
-}
-
-//生成Javadoc文档
-task javadoc(type: Javadoc) {
-    source = android.sourceSets.main.java.srcDirs
-    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
-}
-
-//文档打包成jar
-task javadocJar(type: Jar, dependsOn: javadoc) {
-    classifier = 'javadoc'
-    from javadoc.destinationDir
-}
-
-//拷贝javadoc文件
-task copyDoc(type: Copy) {
-    from "${buildDir}/docs/"
-    into "docs"
-}
-
-//上传到JCenter所需要的源码文件
-artifacts {
-    archives javadocJar
-    archives sourcesJar
-}
-
-//解决 JavaDoc 中文注释生成失败的问题
-tasks.withType(Javadoc) {
-    options.addStringOption('Xdoclint:none', '-quiet')
-    options.addStringOption('encoding', 'UTF-8')
-    options.addStringOption('charSet', 'UTF-8')
-}
-
-
-//发布到 Bintray
-publish {
-
-    userOrg = 'luyaox'           //bintray.com 注册的用户名
-    groupId = 'luyao.util.ktx'   //以后访问 jcenter上此项目的路径，一般和库项目的包名一致
-    artifactId = 'AndroidUtilKTX'       //bintray.com 创建的 Package 名
-    publishVersion = '0.0.7-alpha02'         //版本号
-    desc = 'Android Kotlin Util Code' //版本说明，随意
-    website = 'https://github.com/lulululbj/AndroidUtilCodeKTX'    //关于这个开源项目的网站，随意
-}

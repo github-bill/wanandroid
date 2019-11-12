@@ -89,6 +89,4 @@ class LoginViewModel : BaseViewModel() {
             val enableLoginButton: Boolean,
             val needLogin:Boolean
     )
-
-
 }

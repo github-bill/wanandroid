@@ -4,13 +4,11 @@ import android.os.Bundle
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.chad.library.adapter.base.BaseQuickAdapter
-import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.fragment_projecttype.*
 import kotlinx.android.synthetic.main.fragment_systemtype.*
 import luyao.util.ktx.base.BaseVMFragment
-import luyao.util.ktx.ext.dp2px
+import luyao.util.ktx.ext.view.dp2px
 import luyao.util.ktx.ext.startKtxActivity
-import luyao.util.ktx.ext.toast
 import luyao.wanandroid.R
 import luyao.wanandroid.adapter.ProjectAdapter
 import luyao.wanandroid.model.bean.ArticleList
@@ -20,7 +18,6 @@ import luyao.wanandroid.util.Preference
 import luyao.wanandroid.view.CustomLoadMoreView
 import luyao.wanandroid.view.SpaceItemDecoration
 import onNetError
-import retrofit2.HttpException
 
 /**
  * Created by Lu

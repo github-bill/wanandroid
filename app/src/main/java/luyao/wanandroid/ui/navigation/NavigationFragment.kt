@@ -4,8 +4,7 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.fragment_navigation.*
 import luyao.util.ktx.base.BaseVMFragment
-import luyao.util.ktx.ext.dp2px
-import luyao.util.ktx.ext.toast
+import luyao.util.ktx.ext.view.dp2px
 import luyao.wanandroid.R
 import luyao.wanandroid.adapter.NavigationAdapter
 import luyao.wanandroid.adapter.VerticalTabAdapter
@@ -14,7 +13,6 @@ import luyao.wanandroid.view.SpaceItemDecoration
 import onNetError
 import q.rorbin.verticaltablayout.VerticalTabLayout
 import q.rorbin.verticaltablayout.widget.TabView
-import retrofit2.HttpException
 
 /**
  * Created by Lu

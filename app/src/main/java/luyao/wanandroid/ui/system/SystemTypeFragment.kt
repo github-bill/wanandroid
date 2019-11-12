@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.chad.library.adapter.base.BaseQuickAdapter
 import kotlinx.android.synthetic.main.fragment_systemtype.*
 import luyao.util.ktx.base.BaseVMFragment
-import luyao.util.ktx.ext.dp2px
+import luyao.util.ktx.ext.view.dp2px
 import luyao.util.ktx.ext.startKtxActivity
 import luyao.wanandroid.R
 import luyao.wanandroid.adapter.HomeArticleAdapter

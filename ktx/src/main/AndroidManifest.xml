@@ -1,23 +1,35 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="luyao.util.ktx">
+    package="luyao.util.ktx">
 
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application>
+        <!--设计图尺寸-->
+        <meta-data
+            android:name="design_width_in_dp"
+            android:value="360" />
+        <meta-data
+            android:name="design_height_in_dp"
+            android:value="640" />
 
         <provider
-                android:authorities="${applicationId}.fileprovider"
-                android:name="androidx.core.content.FileProvider"
-                android:exported="false"
-                android:grantUriPermissions="true">
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
             <meta-data
-                    android:name="android.support.FILE_PROVIDER_PATHS"
-                    android:resource="@xml/filepaths"/>
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/filepaths" />
         </provider>
 
         <provider
-                android:authorities="${applicationId}.KtxInstaller"
-                android:name=".Ktx"
-                android:exported="false"/>
+            android:name=".Ktx"
+            android:authorities="${applicationId}.KtxInstaller"
+            android:exported="false" />
 
     </application>
 </manifest>

@@ -1,4 +1,4 @@
-package luyao.util.ktx.core.func
+package luyao.util.ktx.core.util
 
 import luyao.util.ktx.ext.canListFiles
 import java.io.*
@@ -114,9 +114,19 @@ fun copyFolder(sourceFolder: File, destFolder: File, overwrite: Boolean, func: (
 
     for (subFile in sourceFolder.listFiles()) {
         if (subFile.isDirectory) {
-            copyFolder(subFile, File("${destFolder.path}${File.separator}${subFile.name}"), overwrite, func)
+            copyFolder(
+                subFile,
+                File("${destFolder.path}${File.separator}${subFile.name}"),
+                overwrite,
+                func
+            )
         } else {
-            copyFile(subFile, File(destFolder, subFile.name), overwrite, func)
+            copyFile(
+                subFile,
+                File(destFolder, subFile.name),
+                overwrite,
+                func
+            )
         }
     }
 }

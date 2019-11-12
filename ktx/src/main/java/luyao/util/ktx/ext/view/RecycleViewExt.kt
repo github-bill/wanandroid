@@ -3,7 +3,6 @@ package luyao.util.ktx.ext.view
 import android.graphics.Rect
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import luyao.util.ktx.ext.dp2px
 
 /**
  * Created by luyao

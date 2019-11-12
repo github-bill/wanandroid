@@ -13,7 +13,7 @@ import com.zhy.view.flowlayout.TagAdapter
 import kotlinx.android.synthetic.main.activity_search.*
 import kotlinx.android.synthetic.main.fragment_home.*
 import luyao.util.ktx.base.BaseVMActivity
-import luyao.util.ktx.ext.dp2px
+import luyao.util.ktx.ext.view.dp2px
 import luyao.util.ktx.ext.startKtxActivity
 import luyao.wanandroid.R
 import luyao.wanandroid.adapter.HomeArticleAdapter

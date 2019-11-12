@@ -3,6 +3,7 @@ package luyao.util.ktx.base
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.alibaba.android.arouter.launcher.ARouter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
@@ -16,9 +17,9 @@ abstract class BaseActivity : AppCompatActivity(), CoroutineScope by MainScope()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        ARouter.getInstance().inject(this)
         setContentView(getLayoutResId())
         initView()
-//        setSupportActionBar(mToolbar)
         initData()
     }
 
