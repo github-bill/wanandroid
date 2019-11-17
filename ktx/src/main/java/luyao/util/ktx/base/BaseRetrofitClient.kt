@@ -1,8 +1,8 @@
-package luyao.wanandroid.model.api
+package luyao.util.ktx.base
 
-import luyao.wanandroid.BuildConfig
+import luyao.util.ktx.BuildConfig
+import luyao.util.ktx.core.util.log.okhttp.LoggingInterceptor
 import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
@@ -20,15 +20,11 @@ abstract class BaseRetrofitClient {
     private val client: OkHttpClient
         get() {
             val builder = OkHttpClient.Builder()
-            val logging = HttpLoggingInterceptor()
             if (BuildConfig.DEBUG) {
-                logging.level = HttpLoggingInterceptor.Level.BODY
-            } else {
-                logging.level = HttpLoggingInterceptor.Level.BASIC
+                builder.addInterceptor(LoggingInterceptor())
             }
 
-            builder.addInterceptor(logging)
-                    .connectTimeout(TIME_OUT.toLong(), TimeUnit.SECONDS)
+            builder.connectTimeout(TIME_OUT.toLong(), TimeUnit.SECONDS)
 
             handleBuilder(builder)
 
@@ -39,11 +35,11 @@ abstract class BaseRetrofitClient {
 
     fun <S> getService(serviceClass: Class<S>, baseUrl: String): S {
         return Retrofit.Builder()
-                .client(client)
-                .addConverterFactory(GsonConverterFactory.create())
+            .client(client)
+            .addConverterFactory(GsonConverterFactory.create())
 //                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
 //                .addCallAdapterFactory(CoroutineCallAdapterFactory.invoke())
-                .baseUrl(baseUrl)
-                .build().create(serviceClass)
+            .baseUrl(baseUrl)
+            .build().create(serviceClass)
     }
 }

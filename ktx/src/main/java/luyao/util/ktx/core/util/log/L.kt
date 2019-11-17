@@ -1,31 +1,28 @@
-package com.safframework.log
+package luyao.util.ktx.core.util.log
 
 import android.util.Log
-import com.safframework.log.formatter.BorderFormatter
-import com.safframework.log.formatter.Formatter
-import com.safframework.log.handler.*
-import com.safframework.log.printer.ConsolePrinter
-import com.safframework.log.printer.Printer
+import luyao.util.ktx.core.util.log.formatter.BorderFormatter
+import luyao.util.ktx.core.util.log.formatter.Formatter
+import luyao.util.ktx.core.util.log.handler.*
+import luyao.util.ktx.core.util.log.printer.ConsolePrinter
+import luyao.util.ktx.core.util.log.printer.Printer
 import java.util.*
 
-/**
- * Created by Tony Shen on 2017/1/2.
- */
+
 object L {
 
-    private var TAG = "SAF_L"
+    private var TAG = "L"
     private var header: String? = ""
     private val handlers = LinkedList<BaseHandler>()
     private var firstHandler: BaseHandler
     private val printers = mutableSetOf<Printer>()
-    private var displayThreadInfo:Boolean  = true
-    private var displayClassInfo:Boolean   = true
+    private var displayThreadInfo: Boolean = true
+    private var displayClassInfo: Boolean = true
 
     init {
         printers.add(ConsolePrinter()) // 默认添加 ConsolePrinter
 
         handlers.apply {
-
             add(StringHandler())
             add(CollectionHandler())
             add(MapHandler())
@@ -75,7 +72,7 @@ object L {
      */
     @JvmStatic
     fun header(header: String?): L {
-        this.header = header
+        L.header = header
         return this
     }
 
@@ -95,7 +92,6 @@ object L {
      */
     @JvmStatic
     fun addCustomerHandler(handler: BaseHandler, index: Int): L {
-
         handlers.add(index, handler)
 
         val len = handlers.size
@@ -115,7 +111,7 @@ object L {
     @JvmStatic
     fun addPrinter(printer: Printer): L {
 
-        this.printers.add(printer)
+        printers.add(printer)
         return this
     }
 
@@ -125,7 +121,7 @@ object L {
     @JvmStatic
     fun removePrinter(printer: Printer): L {
 
-        this.printers.remove(printer)
+        printers.remove(printer)
         return this
     }
 
@@ -133,9 +129,8 @@ object L {
      * 是否打印线程信息
      */
     @JvmStatic
-    fun displayThreadInfo(displayThreadInfo:Boolean): L {
-
-        this.displayThreadInfo = displayThreadInfo
+    fun displayThreadInfo(displayThreadInfo: Boolean): L {
+        L.displayThreadInfo = displayThreadInfo
         return this
     }
 
@@ -143,9 +138,8 @@ object L {
      * 是否打印类的信息
      */
     @JvmStatic
-    fun displayClassInfo(displayClassInfo:Boolean): L {
-
-        this.displayClassInfo = displayClassInfo
+    fun displayClassInfo(displayClassInfo: Boolean): L {
+        L.displayClassInfo = displayClassInfo
         return this
     }
 
@@ -154,66 +148,68 @@ object L {
     /******************* L 提供打印的方法 Start *******************/
 
     @JvmStatic
-    fun e(msg: String?) = e(TAG,msg)
+    fun e(msg: String?) = e(TAG, msg)
 
     @JvmStatic
-    fun e(tag: String?, msg: String?) = printLog(LogLevel.ERROR,tag,msg)
+    fun e(tag: String?, msg: String?) = printLog(LogLevel.ERROR, tag, msg)
 
     @JvmStatic
-    fun e(msg: String?, tr: Throwable) = e(TAG,msg,tr)
+    fun e(msg: String?, tr: Throwable) = e(TAG, msg, tr)
 
     @JvmStatic
-    fun e(tag: String?, msg: String?, tr: Throwable) = printThrowable(LogLevel.ERROR,tag,msg,tr)
+    fun e(tag: String?, msg: String?, tr: Throwable) = printThrowable(LogLevel.ERROR, tag, msg, tr)
 
     @JvmStatic
-    fun w(msg: String?) = w(TAG,msg)
+    fun w(msg: String?) = w(TAG, msg)
 
     @JvmStatic
-    fun w(tag: String?, msg: String?) = printLog(LogLevel.WARN,tag,msg)
+    fun w(tag: String?, msg: String?) = printLog(LogLevel.WARN, tag, msg)
 
     @JvmStatic
-    fun w(msg: String?, tr: Throwable) = w(TAG,msg,tr)
+    fun w(msg: String?, tr: Throwable) = w(TAG, msg, tr)
 
     @JvmStatic
-    fun w(tag: String?, msg: String?, tr: Throwable) = printThrowable(LogLevel.WARN,tag,msg,tr)
+    fun w(tag: String?, msg: String?, tr: Throwable) = printThrowable(LogLevel.WARN, tag, msg, tr)
 
     @JvmStatic
-    fun i(msg: String?) = i(TAG,msg)
+    fun i(msg: String?) = i(TAG, msg)
 
     @JvmStatic
-    fun i(tag: String?, msg: String?) = printLog(LogLevel.INFO,tag,msg)
+    fun i(tag: String?, msg: String?) = printLog(LogLevel.INFO, tag, msg)
 
     @JvmStatic
-    fun i(msg: String?, tr: Throwable) = i(TAG,msg,tr)
+    fun i(msg: String?, tr: Throwable) = i(TAG, msg, tr)
 
     @JvmStatic
-    fun i(tag: String?, msg: String?, tr: Throwable) = printThrowable(LogLevel.INFO,tag,msg,tr)
+    fun i(tag: String?, msg: String?, tr: Throwable) = printThrowable(LogLevel.INFO, tag, msg, tr)
 
     @JvmStatic
-    fun d(msg: String?) = d(TAG,msg)
+    fun d(msg: String?) = d(TAG, msg)
 
     @JvmStatic
-    fun d(tag: String?, msg: String?) = printLog(LogLevel.DEBUG,tag,msg)
+    fun d(tag: String?, msg: String?) = printLog(LogLevel.DEBUG, tag, msg)
 
     @JvmStatic
-    fun d(msg: String?, tr: Throwable) = d(TAG,msg,tr)
+    fun d(msg: String?, tr: Throwable) = d(TAG, msg, tr)
 
     @JvmStatic
-    fun d(tag: String?, msg: String?, tr: Throwable) = printThrowable(LogLevel.DEBUG,tag,msg,tr)
+    fun d(tag: String?, msg: String?, tr: Throwable) = printThrowable(LogLevel.DEBUG, tag, msg, tr)
 
     /**
      * 使用特定的 printer 进行打印日志
      */
     @JvmStatic
-    fun print(logLevel: LogLevel, tag: String?, msg: String?,vararg printers: Printer) {
-
+    fun print(logLevel: LogLevel, tag: String?, msg: String?, vararg printers: Printer) {
         if (logLevel.value <= L.logLevel.value) {
             if (tag != null && tag.isNotEmpty() && msg != null && msg.isNotEmpty()) {
-
                 if (msg.contains("\n")) {
                     printers.map {
                         val s = getMethodNames(it.formatter)
-                        it.printLog(logLevel, tag, String.format(s, msg.replace("\n", "\n${it.formatter.spliter()}")))
+                        it.printLog(
+                            logLevel,
+                            tag,
+                            String.format(s, msg.replace("\n", "\n${it.formatter.splitter()}"))
+                        )
                     }
                 } else {
                     printers.map {
@@ -226,15 +222,16 @@ object L {
     }
 
     private fun printLog(logLevel: LogLevel, tag: String?, msg: String?) {
-
         if (logLevel.value <= L.logLevel.value) {
-
             if (tag != null && tag.isNotEmpty() && msg != null && msg.isNotEmpty()) {
-
                 if (msg.contains("\n")) {
                     printers.map {
                         val s = getMethodNames(it.formatter)
-                        it.printLog(logLevel, tag, String.format(s, msg.replace("\n", "\n${it.formatter.spliter()}")))
+                        it.printLog(
+                            logLevel,
+                            tag,
+                            String.format(s, msg.replace("\n", "\n${it.formatter.splitter()}"))
+                        )
                     }
                 } else {
                     printers.map {
@@ -247,19 +244,12 @@ object L {
     }
 
     private fun printThrowable(logLevel: LogLevel, tag: String?, msg: String?, tr: Throwable) {
-
         if (logLevel.value <= L.logLevel.value) {
-
             if (tag != null && tag.isNotEmpty() && msg != null && msg.isNotEmpty()) {
-
-                when(logLevel) {
-
+                when (logLevel) {
                     LogLevel.ERROR -> Log.e(tag, msg, tr)
-
-                    LogLevel.WARN  -> Log.w(tag, msg, tr)
-
-                    LogLevel.INFO  -> Log.i(tag, msg, tr)
-
+                    LogLevel.WARN -> Log.w(tag, msg, tr)
+                    LogLevel.INFO -> Log.i(tag, msg, tr)
                     LogLevel.DEBUG -> Log.d(tag, msg, tr)
                 }
             }
@@ -271,12 +261,10 @@ object L {
      */
     @JvmStatic
     fun json(obj: Any?) {
-
         if (obj == null) {
             e("object is null")
             return
         }
-
         firstHandler.handleObject(obj)
     }
 
@@ -285,49 +273,41 @@ object L {
     @JvmOverloads
     @JvmStatic
     fun getMethodNames(formatter: Formatter = BorderFormatter): String {
-
         val sElements = Thread.currentThread().stackTrace
-
         var stackOffset = LoggerPrinter.getStackOffset(sElements)
-
         stackOffset++
-
         return StringBuilder().apply {
-
             append("  ").append(formatter.top())
         }.apply {
-
             header?.let {
-
                 if (it.isNotEmpty()) {
                     // 添加 Header
-                   append("Header: $header").append(formatter.middle())
+                    append("Header: $header").append(formatter.middle())
                 }
             }
         }.apply {
-
             if (displayThreadInfo) {
                 // 添加当前线程名
                 append("Thread: ${Thread.currentThread().name}")
-                        .append(formatter.middle())
-                        .append(formatter.spliter())
+                    .append(formatter.middle())
+                    .append(formatter.splitter())
             }
 
             if (displayClassInfo) {
 
                 // 添加类名、方法名、行数
                 append(sElements[stackOffset].className)
-                        .append(".")
-                        .append(sElements[stackOffset].methodName)
-                        .append(" ")
-                        .append("(")
-                        .append(sElements[stackOffset].fileName)
-                        .append(":")
-                        .append(sElements[stackOffset].lineNumber)
-                        .append(")")
-                        .append(formatter.middle())
-                        // 添加打印的日志信息
-                        .append(formatter.spliter())
+                    .append(".")
+                    .append(sElements[stackOffset].methodName)
+                    .append(" ")
+                    .append("(")
+                    .append(sElements[stackOffset].fileName)
+                    .append(":")
+                    .append(sElements[stackOffset].lineNumber)
+                    .append(")")
+                    .append(formatter.middle())
+                    // 添加打印的日志信息
+                    .append(formatter.splitter())
             }
 
             append("%s").append(formatter.bottom())

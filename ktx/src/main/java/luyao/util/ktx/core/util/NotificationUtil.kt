@@ -1,4 +1,4 @@
-package com.safframework.utils
+package luyao.util.ktx.core.util
 
 
 import android.app.Notification
@@ -10,15 +10,13 @@ import android.content.ContextWrapper
 import android.graphics.Color
 import android.net.Uri
 import android.os.Build
-import android.support.annotation.RequiresApi
-import android.support.v4.app.NotificationCompat
 import android.widget.RemoteViews
+import androidx.annotation.RequiresApi
+import androidx.core.app.NotificationCompat
 
 
 /**
- * @Author zhiqiang
- * @Date 2019-06-17
- * @Description 通知管理类 参考https://github.com/yangchong211/YCNotification
+ * 通知管理类
  */
 class NotificationUtil(base: Context) : ContextWrapper(base) {
     private var mManager: NotificationManager? = null
@@ -135,9 +133,14 @@ class NotificationUtil(base: Context) : ContextWrapper(base) {
      * @param icon
      * @return
      */
-    fun getNotificationBuilder(title: String, content: String, icon: Int): NotificationCompat.Builder {
+    fun getNotificationBuilder(
+        title: String,
+        content: String,
+        icon: Int
+    ): NotificationCompat.Builder {
 
-        val builder: NotificationCompat.Builder = NotificationCompat.Builder(applicationContext,
+        val builder: NotificationCompat.Builder = NotificationCompat.Builder(
+            applicationContext,
             CHANNEL_ID
         )
 

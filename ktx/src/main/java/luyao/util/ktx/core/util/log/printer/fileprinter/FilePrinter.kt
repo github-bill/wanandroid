@@ -1,34 +1,30 @@
-package com.safframework.log.printer
+package luyao.util.ktx.core.util.log.printer.fileprinter
 
-import com.alibaba.fastjson.JSON
-import com.safframework.log.LogLevel
-import com.safframework.log.formatter.Formatter
-import com.safframework.log.printer.coroutines.ioScope
-import com.safframework.log.printer.file.FileBuilder
 import com.safframework.log.printer.file.FileWriter
-import com.safframework.log.printer.file.bean.LogItem
-import com.safframework.log.printer.file.clean.CleanStrategy
-import com.safframework.log.printer.file.clean.NeverCleanStrategy
-import com.safframework.log.printer.file.name.DateFileNameGenerator
-import com.safframework.log.printer.file.name.FileNameGenerator
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.launch
+import luyao.util.ktx.core.util.log.LogLevel
+import luyao.util.ktx.core.util.log.formatter.Formatter
+import luyao.util.ktx.core.util.log.printer.Printer
+import luyao.util.ktx.core.util.log.printer.fileprinter.coroutines.ioScope
+import luyao.util.ktx.core.util.log.printer.fileprinter.file.FileBuilder
+import luyao.util.ktx.core.util.log.printer.fileprinter.file.bean.LogItem
+import luyao.util.ktx.core.util.log.printer.fileprinter.file.clean.CleanStrategy
+import luyao.util.ktx.core.util.log.printer.fileprinter.file.clean.NeverCleanStrategy
+import luyao.util.ktx.core.util.log.printer.fileprinter.file.name.DateFileNameGenerator
+import luyao.util.ktx.core.util.log.printer.fileprinter.file.name.FileNameGenerator
 import java.io.File
 
 
 /**
- *
- * @FileName:
- *          com.safframework.log.printer.FilePrinter
- * @author: Tony Shen
- * @date: 2019-08-31 10:58
- * @since: V2.0 打印到文件的Printer，默认的 formatter 使用 SimpleFormatter
+ * Android Q 内部存储设备/Android/data/com.项目包名/
+ * L.addPrinter(FileBuilder().folderPath("/storage/emulated/0/Android/data/${getPackageName()}/logs").build())
+ *打印到文件的Printer，默认的 formatter 使用 SimpleFormatter
  */
-class FilePrinter(fileBuilder: FileBuilder,override val formatter: Formatter):Printer{
-
+class FilePrinter(fileBuilder: FileBuilder, override val formatter: Formatter) : Printer {
     private val channel = Channel<LogItem>()
-    private val folderPath:String
+    private val folderPath: String
     private val fileNameGenerator: FileNameGenerator
     private val cleanStrategy: CleanStrategy
     private val writer: FileWriter
@@ -36,32 +32,32 @@ class FilePrinter(fileBuilder: FileBuilder,override val formatter: Formatter):Pr
     init {
         ioScope().launch {
             channel.consumeEach {
-
                 doWrite(it)
             }
         }
 
-        folderPath        = fileBuilder.folderPath?: "/sdcard/logs/"
-        fileNameGenerator = fileBuilder.fileNameGenerator?: DateFileNameGenerator()
-        cleanStrategy     = fileBuilder.cleanStrategy?: NeverCleanStrategy()
+        folderPath = fileBuilder.folderPath ?: "/sdcard/logs/"
+        fileNameGenerator = fileBuilder.fileNameGenerator ?: DateFileNameGenerator()
+        cleanStrategy = fileBuilder.cleanStrategy ?: NeverCleanStrategy()
 
-        writer            = FileWriter(folderPath)
+        writer = FileWriter(folderPath)
     }
 
     override fun printLog(logLevel: LogLevel, tag: String, msg: String) {
-
         ioScope().launch {
             channel.send(LogItem(System.currentTimeMillis(), logLevel, tag, msg))
         }
     }
 
-    private fun doWrite(logItem:LogItem) {
-
-        var lastFileName = writer.lastFileName
+    private fun doWrite(logItem: LogItem) {
+        val lastFileName = writer.lastFileName
 
         if (lastFileName == null || fileNameGenerator.isFileNameChangeable()) {
-
-            val newFileName = fileNameGenerator.generateFileName(logItem.level.value, logItem.tag ,System.currentTimeMillis())
+            val newFileName = fileNameGenerator.generateFileName(
+                logItem.level.value,
+                logItem.tag,
+                System.currentTimeMillis()
+            )
 
             require(newFileName.trim { it <= ' ' }.isNotEmpty()) { "File name should not be empty." }
 
@@ -77,17 +73,14 @@ class FilePrinter(fileBuilder: FileBuilder,override val formatter: Formatter):Pr
                 }
             }
         }
-
-        writer.appendLog(JSON.toJSONString(logItem))
+        writer.appendLog(logItem.toString())
     }
 
     /**
      * 判断是否需要删除日志文件
      */
     private fun cleanLogFilesIfNecessary() {
-
         File(folderPath).listFiles()?.map {
-
             if (cleanStrategy.shouldClean(it)) {
                 it.delete()
             }

@@ -13,15 +13,16 @@ import com.zhy.view.flowlayout.TagAdapter
 import kotlinx.android.synthetic.main.activity_search.*
 import kotlinx.android.synthetic.main.fragment_home.*
 import luyao.util.ktx.base.BaseVMActivity
-import luyao.util.ktx.ext.view.dp2px
 import luyao.util.ktx.ext.startKtxActivity
+import luyao.util.ktx.ext.view.dp2px
 import luyao.wanandroid.R
 import luyao.wanandroid.adapter.HomeArticleAdapter
+import luyao.wanandroid.model.LoginConst
 import luyao.wanandroid.model.bean.ArticleList
 import luyao.wanandroid.model.bean.Hot
 import luyao.wanandroid.ui.BrowserNormalActivity
 import luyao.wanandroid.ui.login.LoginActivity
-import luyao.wanandroid.util.Preference
+import luyao.wanandroid.util.LoginPrefsHelper
 import luyao.wanandroid.view.CustomLoadMoreView
 import luyao.wanandroid.view.SpaceItemDecoration
 
@@ -34,7 +35,6 @@ class SearchActivity : BaseVMActivity<SearchViewModel>() {
 
     override fun providerVMClass(): Class<SearchViewModel>? = SearchViewModel::class.java
 
-    private val isLogin by Preference(Preference.IS_LOGIN, false)
     private val searchAdapter by lazy { HomeArticleAdapter() }
     private var currentPage = 0
     private var key = ""
@@ -80,7 +80,11 @@ class SearchActivity : BaseVMActivity<SearchViewModel>() {
             setOnLoadMoreListener({ loadMore() }, homeRecycleView)
         }
         searchRecycleView.adapter = searchAdapter
-        val emptyView = layoutInflater.inflate(R.layout.empty_view, searchRecycleView.parent as ViewGroup, false)
+        val emptyView = layoutInflater.inflate(
+            R.layout.empty_view,
+            searchRecycleView.parent as ViewGroup,
+            false
+        )
         val emptyTv = emptyView.findViewById<TextView>(R.id.emptyTv)
         emptyTv.text = getString(R.string.try_another_key)
         searchAdapter.emptyView = emptyView
@@ -96,23 +100,24 @@ class SearchActivity : BaseVMActivity<SearchViewModel>() {
         mViewModel.getWebSites()
     }
 
-    private val onItemChildClickListener = BaseQuickAdapter.OnItemChildClickListener { _, view, position ->
-        when (view.id) {
-            R.id.articleStar -> {
-                if (isLogin) {
-                    searchAdapter.run {
-                        data[position].run {
-                            collect = !collect
-                            mViewModel.collectArticle(id, collect)
+    private val onItemChildClickListener =
+        BaseQuickAdapter.OnItemChildClickListener { _, view, position ->
+            when (view.id) {
+                R.id.articleStar -> {
+                    if ( LoginPrefsHelper.instance.isLogin) {
+                        searchAdapter.run {
+                            data[position].run {
+                                collect = !collect
+                                mViewModel.collectArticle(id, collect)
+                            }
+                            notifyDataSetChanged()
                         }
-                        notifyDataSetChanged()
+                    } else {
+                        startKtxActivity<LoginActivity>()
                     }
-                } else {
-                    startKtxActivity<LoginActivity>()
                 }
             }
         }
-    }
 
 
     private fun initTagLayout() {
@@ -121,8 +126,10 @@ class SearchActivity : BaseVMActivity<SearchViewModel>() {
                 override fun getCount() = hotList.size
 
                 override fun getView(parent: FlowLayout, position: Int, t: Hot): View {
-                    val tv = LayoutInflater.from(parent.context).inflate(R.layout.tag,
-                            parent, false) as TextView
+                    val tv = LayoutInflater.from(parent.context).inflate(
+                        R.layout.tag,
+                        parent, false
+                    ) as TextView
                     tv.text = t.name
                     return tv
                 }
@@ -140,8 +147,10 @@ class SearchActivity : BaseVMActivity<SearchViewModel>() {
                 override fun getCount() = webSitesList.size
 
                 override fun getView(parent: FlowLayout, position: Int, t: Hot): View {
-                    val tv = LayoutInflater.from(parent.context).inflate(R.layout.tag,
-                            parent, false) as TextView
+                    val tv = LayoutInflater.from(parent.context).inflate(
+                        R.layout.tag,
+                        parent, false
+                    ) as TextView
                     tv.text = t.name
                     return tv
                 }
@@ -168,9 +177,9 @@ class SearchActivity : BaseVMActivity<SearchViewModel>() {
 
             if (articleList.datas.isEmpty()) {
                 searchRefreshLayout.isRefreshing = false
-                if (currentPage == 0){
+                if (currentPage == 0) {
                     data.clear()
-                    notifyItemRangeRemoved(0,data.size)
+                    notifyItemRangeRemoved(0, data.size)
                 }
                 loadMoreEnd()
                 return

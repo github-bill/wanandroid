@@ -4,7 +4,8 @@ import com.franmontiel.persistentcookiejar.PersistentCookieJar
 import com.franmontiel.persistentcookiejar.cache.SetCookieCache
 import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersistor
 import luyao.util.ktx.base.BaseApplication
-import luyao.wanandroid.util.NetWorkUtils
+import luyao.util.ktx.base.BaseRetrofitClient
+import luyao.util.ktx.ext.isNetworkAvailable
 import okhttp3.Cache
 import okhttp3.CacheControl
 import okhttp3.OkHttpClient
@@ -36,13 +37,13 @@ object WanRetrofitClient : BaseRetrofitClient() {
             .cookieJar(cookieJar)
             .addInterceptor { chain ->
                 var request = chain.request()
-                if (!NetWorkUtils.isNetworkAvailable(BaseApplication.instance)) {
+                if (!BaseApplication.instance.isNetworkAvailable) {
                     request = request.newBuilder()
                         .cacheControl(CacheControl.FORCE_CACHE)
                         .build()
                 }
                 val response = chain.proceed(request)
-                if (!NetWorkUtils.isNetworkAvailable(BaseApplication.instance)) {
+                if (!BaseApplication.instance.isNetworkAvailable) {
                     val maxAge = 60 * 60
                     response.newBuilder()
                         .removeHeader("Pragma")

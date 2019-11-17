@@ -1,6 +1,7 @@
 package luyao.wanandroid.ui.main
 
 import TOOL_URL
+import android.Manifest
 import android.view.MenuItem
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
@@ -10,7 +11,11 @@ import kotlinx.android.synthetic.main.activity_new_main.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import luyao.util.ktx.base.BaseActivity
+import luyao.util.ktx.ext.goToAppInfoPage
+import luyao.util.ktx.ext.permission.PermissionRequest
+import luyao.util.ktx.ext.permission.request
 import luyao.util.ktx.ext.startKtxActivity
+import luyao.util.ktx.ext.toast
 import luyao.wanandroid.R
 import luyao.wanandroid.model.api.WanRetrofitClient
 import luyao.wanandroid.ui.BrowserNormalActivity
@@ -24,7 +29,7 @@ import luyao.wanandroid.ui.project.ProjectTypeFragment
 import luyao.wanandroid.ui.search.SearchActivity
 import luyao.wanandroid.ui.square.SquareFragment
 import luyao.wanandroid.ui.system.SystemFragment
-import luyao.wanandroid.util.Preference
+import luyao.wanandroid.util.LoginPrefsHelper
 
 /**
  * Created by luyao
@@ -32,10 +37,7 @@ import luyao.wanandroid.util.Preference
  */
 class NewMainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener {
 
-    private var isLogin by Preference(Preference.IS_LOGIN, false)
-    private var userJson by Preference(Preference.USER_GSON, "")
-
-    private val titleList = arrayOf("首页", "广场","最新项目", "体系", "导航")
+    private val titleList = arrayOf("首页", "广场", "最新项目", "体系", "导航")
     private val fragmentList = arrayListOf<Fragment>()
     private val homeFragment by lazy { HomeFragment() } // 首页
     private val squareFragment by lazy { SquareFragment() } // 广场
@@ -58,16 +60,36 @@ class NewMainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedL
         initViewPager()
         mainToolBar.setNavigationOnClickListener { drawerLayout.openDrawer(GravityCompat.START) }
         navigationView.setNavigationItemSelectedListener(this)
-        navigationView.menu.findItem(R.id.nav_exit).isVisible = isLogin
+        navigationView.menu.findItem(R.id.nav_exit).isVisible = LoginPrefsHelper.instance.isLogin
     }
 
     override fun initData() {
         mainSearch.setOnClickListener { startKtxActivity<SearchActivity>() }
+
+
+        request(Manifest.permission.WRITE_EXTERNAL_STORAGE) {
+            onGranted { toast("onGranted") }
+            onDenied { toast("onDenied") }
+            onShowRationale { showRationale(it) }
+            onNeverAskAgain { goToAppInfoPage() }
+        }
+    }
+
+    private fun showRationale(request: PermissionRequest) {
+        MaterialDialog(this).show {
+            title = "Request Permission"
+            message(text = "We need permission to provide normal service. Do you agree ?")
+            positiveButton(R.string.agree) { request.retry() }
+            negativeButton(R.string.disagree)
+        }
     }
 
     private fun initViewPager() {
         viewPager.offscreenPageLimit = titleList.size
-        viewPager.adapter = object : androidx.fragment.app.FragmentPagerAdapter(supportFragmentManager,BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
+        viewPager.adapter = object : androidx.fragment.app.FragmentPagerAdapter(
+            supportFragmentManager,
+            BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT
+        ) {
             override fun getItem(position: Int) = fragmentList[position]
 
             override fun getCount() = titleList.size
@@ -99,16 +121,16 @@ class NewMainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedL
                 launch(Dispatchers.Default) {
                     WanRetrofitClient.service.logOut()
                 }
-                isLogin = false
-                userJson = ""
+                LoginPrefsHelper.instance.isLogin = false
+                LoginPrefsHelper.instance.userJson = ""
                 refreshView()
             }
             negativeButton(text = "取消")
         }
     }
 
-    private fun refreshView(){
-        navigationView.menu.findItem(R.id.nav_exit).isVisible = isLogin
+    private fun refreshView() {
+        navigationView.menu.findItem(R.id.nav_exit).isVisible = LoginPrefsHelper.instance.isLogin
         homeFragment.refresh()
         lastedProjectFragment.refresh()
     }
@@ -118,7 +140,7 @@ class NewMainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedL
     }
 
     private fun switchCollect() {
-        if (isLogin) {
+        if (LoginPrefsHelper.instance.isLogin) {
             startKtxActivity<MyCollectActivity>()
         } else {
             startKtxActivity<LoginActivity>()
@@ -128,6 +150,4 @@ class NewMainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedL
     private fun switchToTool() {
         startKtxActivity<BrowserNormalActivity>(value = BrowserNormalActivity.URL to TOOL_URL)
     }
-
-
 }

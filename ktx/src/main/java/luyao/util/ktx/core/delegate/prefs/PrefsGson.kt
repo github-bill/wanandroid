@@ -1,4 +1,4 @@
-package com.safframework.delegate.prefs
+package luyao.util.ktx.core.delegate.prefs
 
 import android.content.SharedPreferences
 import com.google.gson.Gson
@@ -7,40 +7,35 @@ import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
 /**
- *
- * @FileName:
- *          com.safframework.delegate.prefs.PrefsGSON.java
- * @author: Tony Shen
- * @date: 2018-06-26 23:43
- * @version V1.0 <描述当前版本功能>
+ * 对象用法
+ * class ObjectPrefsHelper(prefs: SharedPreferences) {
+ * var user1 by prefs.json<User?>(null)
+ * var user2 by prefs.gson<User?>(null)
+ * }
  */
-inline fun <reified T> SharedPreferences.gson(defaultValue: T,key: String? = null) =
-        object : ReadWriteProperty<Any, T> {
-            private val gson = Gson()
-
-            override fun getValue(thisRef: Any, property: KProperty<*>): T {
-
-                val s = getString(key ?: property.name, "")
-
-                return if (s.isBlank()) defaultValue else gson.fromJson(s, T::class.java)
-            }
-
-            override fun setValue(thisRef: Any, property: KProperty<*>, value: T)  =
-                edit().putString(key ?: property.name, gson.toJson(value)).apply()
+inline fun <reified T> SharedPreferences.gson(defaultValue: T, key: String? = null) =
+    object : ReadWriteProperty<Any, T> {
+        private val gson = Gson()
+        override fun getValue(thisRef: Any, property: KProperty<*>): T {
+            val s = getString(key ?: property.name, "")
+            return if (s!!.isBlank()) defaultValue else gson.fromJson(s, T::class.java)
         }
+
+        override fun setValue(thisRef: Any, property: KProperty<*>, value: T) =
+            edit().putString(key ?: property.name, gson.toJson(value)).apply()
+    }
 
 inline fun <reified T> SharedPreferences.gsonList(key: String? = null) =
-        object : ReadWriteProperty<Any, List<T>> {
-
-            private val gson = Gson()
-
-            override fun getValue(thisRef: Any, property: KProperty<*>): List<T> {
-
-                val s = getString(key ?: property.name, "")
-
-                return if (s.isBlank()) emptyList() else gson.fromJson<List<T>>(s, object : TypeToken<List<T>>() {}.type)
-            }
-
-            override fun setValue(thisRef: Any, property: KProperty<*>, value: List<T>) =
-                edit().putString(key ?: property.name, gson.toJson(value)).apply()
+    object : ReadWriteProperty<Any, List<T>> {
+        private val gson = Gson()
+        override fun getValue(thisRef: Any, property: KProperty<*>): List<T> {
+            val s = getString(key ?: property.name, "")
+            return if (s!!.isBlank()) emptyList() else gson.fromJson<List<T>>(
+                s,
+                object : TypeToken<List<T>>() {}.type
+            )
         }
+
+        override fun setValue(thisRef: Any, property: KProperty<*>, value: List<T>) =
+            edit().putString(key ?: property.name, gson.toJson(value)).apply()
+    }

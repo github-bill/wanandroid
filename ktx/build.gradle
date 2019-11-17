@@ -52,7 +52,7 @@ dependencies {
     testImplementation depends.junit
     androidTestImplementation depends.espresso_test_runner
     androidTestImplementation depends.espresso_core
-    //http://localhost:8081/ 数据库调试 adb forward tcp:8081 tcp:8081
+    //http://localhost:8081/ 数据库调试 md
     debugImplementation depends.debug_db
 
     // kotlin
@@ -96,6 +96,7 @@ dependencies {
     api depends.glide_transformations
     api depends.autosize
     api depends.baserecyclerviewadapterhelper
+    api depends.gson
 
     // di
     api depends.koin
@@ -107,7 +108,6 @@ dependencies {
     api depends.retrofit
     api depends.retrofit_gson
     api depends.okhttp
-    api depends.okhttp_logging
     api depends.stetho
     api depends.stetho_okhttp3
     api depends.persistent_cookiejar

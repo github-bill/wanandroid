@@ -7,14 +7,15 @@ import com.chad.library.adapter.base.BaseQuickAdapter
 import kotlinx.android.synthetic.main.fragment_projecttype.*
 import kotlinx.android.synthetic.main.fragment_systemtype.*
 import luyao.util.ktx.base.BaseVMFragment
-import luyao.util.ktx.ext.view.dp2px
 import luyao.util.ktx.ext.startKtxActivity
+import luyao.util.ktx.ext.view.dp2px
 import luyao.wanandroid.R
 import luyao.wanandroid.adapter.ProjectAdapter
+import luyao.wanandroid.model.LoginConst
 import luyao.wanandroid.model.bean.ArticleList
 import luyao.wanandroid.ui.BrowserNormalActivity
 import luyao.wanandroid.ui.login.LoginActivity
-import luyao.wanandroid.util.Preference
+import luyao.wanandroid.util.LoginPrefsHelper
 import luyao.wanandroid.view.CustomLoadMoreView
 import luyao.wanandroid.view.SpaceItemDecoration
 import onNetError
@@ -25,7 +26,6 @@ import onNetError
  */
 class ProjectTypeFragment : BaseVMFragment<ProjectViewModel>() {
 
-    private val isLogin by Preference(Preference.IS_LOGIN, false)
     override fun providerVMClass(): Class<ProjectViewModel>? = ProjectViewModel::class.java
     private val cid by lazy { arguments?.getInt(CID) }
     private val isLasted by lazy { arguments?.getBoolean(LASTED) } // 区分是最新项目 还是项目分类
@@ -123,23 +123,24 @@ class ProjectTypeFragment : BaseVMFragment<ProjectViewModel>() {
         currentPage++
     }
 
-    private val onItemChildClickListener = BaseQuickAdapter.OnItemChildClickListener { _, view, position ->
-        when (view.id) {
-            R.id.articleStar -> {
-                if (isLogin) {
-                    projectAdapter.run {
-                        data[position].run {
-                            collect = !collect
-                            mViewModel.collectArticle(id, collect)
+    private val onItemChildClickListener =
+        BaseQuickAdapter.OnItemChildClickListener { _, view, position ->
+            when (view.id) {
+                R.id.articleStar -> {
+                    if ( LoginPrefsHelper.instance.isLogin) {
+                        projectAdapter.run {
+                            data[position].run {
+                                collect = !collect
+                                mViewModel.collectArticle(id, collect)
+                            }
+                            notifyDataSetChanged()
                         }
-                        notifyDataSetChanged()
+                    } else {
+                        activity?.startKtxActivity<LoginActivity>()
                     }
-                } else {
-                    activity?.startKtxActivity<LoginActivity>()
                 }
             }
         }
-    }
 
     override fun startObserve() {
         super.startObserve()
@@ -153,7 +154,7 @@ class ProjectTypeFragment : BaseVMFragment<ProjectViewModel>() {
     override fun onError(e: Throwable) {
         super.onError(e)
 
-        activity?.onNetError(e){
+        activity?.onNetError(e) {
             projectRefreshLayout.isRefreshing = false
         }
     }

@@ -7,14 +7,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.chad.library.adapter.base.BaseQuickAdapter
 import kotlinx.android.synthetic.main.fragment_systemtype.*
 import luyao.util.ktx.base.BaseVMFragment
-import luyao.util.ktx.ext.view.dp2px
 import luyao.util.ktx.ext.startKtxActivity
+import luyao.util.ktx.ext.view.dp2px
 import luyao.wanandroid.R
 import luyao.wanandroid.adapter.HomeArticleAdapter
 import luyao.wanandroid.model.bean.ArticleList
 import luyao.wanandroid.ui.BrowserNormalActivity
 import luyao.wanandroid.ui.login.LoginActivity
-import luyao.wanandroid.util.Preference
+import luyao.wanandroid.util.LoginPrefsHelper
 import luyao.wanandroid.view.CustomLoadMoreView
 import luyao.wanandroid.view.SpaceItemDecoration
 import onNetError
@@ -24,8 +24,6 @@ import onNetError
  * on 2018/3/27 21:36
  */
 class SystemTypeFragment : BaseVMFragment<SystemViewModel>() {
-
-    private val isLogin by Preference(Preference.IS_LOGIN, false)
 
     override fun providerVMClass(): Class<SystemViewModel>? = SystemViewModel::class.java
 
@@ -81,23 +79,24 @@ class SystemTypeFragment : BaseVMFragment<SystemViewModel>() {
         }
     }
 
-    private val onItemChildClickListener = BaseQuickAdapter.OnItemChildClickListener { _, view, position ->
-        when (view.id) {
-            R.id.articleStar -> {
-                if (isLogin) {
-                    systemTypeAdapter.run {
-                        data[position].run {
-                            collect = !collect
-                            mViewModel.collectArticle(id, collect)
+    private val onItemChildClickListener =
+        BaseQuickAdapter.OnItemChildClickListener { _, view, position ->
+            when (view.id) {
+                R.id.articleStar -> {
+                    if (LoginPrefsHelper.instance.isLogin) {
+                        systemTypeAdapter.run {
+                            data[position].run {
+                                collect = !collect
+                                mViewModel.collectArticle(id, collect)
+                            }
+                            notifyDataSetChanged()
                         }
-                        notifyDataSetChanged()
+                    } else {
+                        Intent(activity, LoginActivity::class.java).run { startActivity(this) }
                     }
-                } else {
-                    Intent(activity, LoginActivity::class.java).run { startActivity(this) }
                 }
             }
         }
-    }
 
     private fun loadMore() {
         cid?.let {
@@ -144,8 +143,8 @@ class SystemTypeFragment : BaseVMFragment<SystemViewModel>() {
     }
 
     override fun onError(e: Throwable) {
-        activity?.onNetError(e){
-            typeRefreshLayout.isRefreshing=false
+        activity?.onNetError(e) {
+            typeRefreshLayout.isRefreshing = false
         }
     }
 }

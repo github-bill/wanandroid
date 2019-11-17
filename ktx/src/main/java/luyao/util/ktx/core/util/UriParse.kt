@@ -1,4 +1,4 @@
-package com.safframework.utils
+package luyao.util.ktx.core.util
 
 import android.net.Uri
 import android.util.Log
@@ -10,9 +10,6 @@ import java.nio.charset.Charset
 import java.util.*
 
 /**
- * @Author zhiqiang
- * @Date 2019/3/7
- * @Description
  * 1.scheme、host、path、encodedPath、query、encodedQuery、queryMap默认不为空
  * 2.自动去掉path最后一个"/"
  * 3.URL相关工具类, 如果需要判断URL类型等Api，请使用[android.webkit.URLUtil]

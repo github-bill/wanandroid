@@ -44,4 +44,7 @@
     <string name="please_input_url">请输入链接</string>
     <string name="share">分享</string>
     <string name="share_article">分享文章</string>
+    <string name="agree">同意</string>
+    <string name="disagree">不同意</string>
+
 </resources>

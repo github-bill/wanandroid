@@ -1,37 +1,31 @@
-package com.safframework.log.handler
+package luyao.util.ktx.core.util.log.handler
 
-import com.alibaba.fastjson.JSON
-import com.safframework.log.L
-import com.safframework.log.LogLevel
-import com.safframework.log.LoggerPrinter
-import com.safframework.log.logTag
-import com.safframework.log.utils.formatJSON
-import com.safframework.log.utils.toJavaClass
+import com.google.gson.Gson
+import luyao.util.ktx.core.util.log.L
+import luyao.util.ktx.core.util.log.LogLevel
+import luyao.util.ktx.core.util.log.LoggerPrinter
+import luyao.util.ktx.core.util.log.logTag
+import luyao.util.ktx.core.util.log.utils.formatJson
+import luyao.util.ktx.core.util.log.utils.toJavaClass
 import org.json.JSONObject
 
 /**
- * Created by tony on 2017/11/27.
+ * 对象处理
  */
-class ObjectHandler:BaseHandler() {
-
+class ObjectHandler : BaseHandler() {
     override fun handle(obj: Any): Boolean {
-
         L.printers().map {
-
             val formatter = it.formatter
-
-            var msg = obj.toJavaClass() + LoggerPrinter.BR + formatter.spliter()
-
-            val message = JSON.toJSONString(obj).run {
+            val msg = obj.toJavaClass() + LoggerPrinter.BR + formatter.splitter()
+            val message = Gson().toJson(obj).run {
                 JSONObject(this)
             }
-            .formatJSON()
-            .let {
-                it.replace("\n", "\n${formatter.spliter()}")
-            }
-
+                .formatJson()
+                .let {
+                    it.replace("\n", "\n${formatter.splitter()}")
+                }
             val s = L.getMethodNames(formatter)
-            it.printLog(LogLevel.INFO, this.logTag(),String.format(s, msg + message))
+            it.printLog(LogLevel.INFO, this.logTag(), String.format(s, msg + message))
         }
         return true
     }

@@ -7,7 +7,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import luyao.util.ktx.base.BaseViewModel
-import luyao.wanandroid.core.Result
+import luyao.util.ktx.bean.Result
 import luyao.wanandroid.model.repository.ShareRepository
 
 /**

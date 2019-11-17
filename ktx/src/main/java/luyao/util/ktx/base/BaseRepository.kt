@@ -1,7 +1,7 @@
-package luyao.wanandroid.model.api
+package luyao.util.ktx.base
 
-import luyao.wanandroid.core.Result
-import luyao.wanandroid.model.bean.WanResponse
+import luyao.util.ktx.bean.Result
+import luyao.util.ktx.bean.Response
 import java.io.IOException
 
 /**
@@ -10,11 +10,14 @@ import java.io.IOException
  */
 open class BaseRepository {
 
-    suspend fun <T : Any> apiCall(call: suspend () -> WanResponse<T>): WanResponse<T> {
+    suspend fun <T : Any> apiCall(call: suspend () -> Response<T>): Response<T> {
         return call.invoke()
     }
 
-    suspend fun <T : Any> safeApiCall(call: suspend () -> Result<T>, errorMessage: String): Result<T> {
+    suspend fun <T : Any> safeApiCall(
+        call: suspend () -> Result<T>,
+        errorMessage: String
+    ): Result<T> {
         return try {
             call()
         } catch (e: Exception) {
@@ -22,6 +25,4 @@ open class BaseRepository {
             Result.Error(IOException(errorMessage, e))
         }
     }
-
-
 }

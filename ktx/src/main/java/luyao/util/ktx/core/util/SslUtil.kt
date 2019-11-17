@@ -1,4 +1,4 @@
-package com.bill.tool.net
+package luyao.util.ktx.core.util
 
 import android.content.Context
 import java.io.ByteArrayInputStream

@@ -3,8 +3,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.coroutineScope
 import luyao.util.ktx.ext.toast
 import luyao.wanandroid.R
-import luyao.wanandroid.core.Result
-import luyao.wanandroid.model.bean.WanResponse
+import luyao.util.ktx.bean.Response
 import retrofit2.HttpException
 
 /**
@@ -16,7 +15,7 @@ const val TOOL_URL = "http://www.wanandroid.com/tools"
 const val GITHUB_PAGE = "https://github.com/lulululbj/wanandroid"
 const val ISSUE_URL = "https://github.com/lulululbj/wanandroid/issues"
 
-suspend fun executeResponse(response: WanResponse<Any>, successBlock: suspend CoroutineScope.() -> Unit,
+suspend fun executeResponse(response: Response<Any>, successBlock: suspend CoroutineScope.() -> Unit,
                             errorBlock: suspend CoroutineScope.() -> Unit) {
     coroutineScope {
         if (response.errorCode == -1) errorBlock()
@@ -31,5 +30,5 @@ fun Activity.onNetError(e: Throwable, func: (e: Throwable) -> Unit) {
     }
 }
 
-fun WanResponse<Any>.isSuccess() :Boolean = this.errorCode == 0
+fun Response<Any>.isSuccess() :Boolean = this.errorCode == 0
 

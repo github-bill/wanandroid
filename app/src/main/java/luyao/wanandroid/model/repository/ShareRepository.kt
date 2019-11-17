@@ -1,8 +1,8 @@
 package luyao.wanandroid.model.repository
 
 import isSuccess
-import luyao.wanandroid.core.Result
-import luyao.wanandroid.model.api.BaseRepository
+import luyao.util.ktx.bean.Result
+import luyao.util.ktx.base.BaseRepository
 import luyao.wanandroid.model.api.WanRetrofitClient
 import java.io.IOException
 

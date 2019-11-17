@@ -1,27 +1,33 @@
-package com.safframework.log
+package luyao.util.ktx.core.util.log
 
 /**
- *
- * @FileName:
- *          com.safframework.log.LogLevel
- * @author: Tony Shen
- * @date: 2019-08-15 01:02
- * @since: V2.0
+ * 日志等级
  */
 enum class LogLevel {
-
+    /**
+     * 错误
+     */
     ERROR {
         override val value: Int
             get() = 0
     },
+    /**
+     * 警告
+     */
     WARN {
         override val value: Int
             get() = 1
     },
+    /**
+     * 信息
+     */
     INFO {
         override val value: Int
             get() = 2
     },
+    /**
+     * 调试
+     */
     DEBUG {
         override val value: Int
             get() = 3

@@ -1,16 +1,13 @@
-package com.safframework.delegate.extras
+package luyao.util.ktx.core.delegate
 
-import android.support.v4.app.Fragment
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import kotlin.reflect.KProperty
 
 /**
  *
- * @FileName:
- *          com.safframework.delegate.extras.Extras.kt
- * @author: Tony Shen
- * @date: 2018-06-11 23:56
- * @version V1.0 <描述当前版本功能>
+ * private val user: User? by extraDelegate("user")
+ * private val s:String? by extraDelegate("string")
  */
 class ExtrasDelegate<out T>(private val extraName: String, private val defaultValue: T) {
 
@@ -34,8 +31,8 @@ fun extraDelegate(extra: String) = extraDelegate(extra, null)
 
 @Suppress("UNCHECKED_CAST")
 private fun <T> getExtra(oldExtra: T?, extraName: String, thisRef: AppCompatActivity): T? =
-        oldExtra ?: thisRef.intent?.extras?.get(extraName) as T?
+    oldExtra ?: thisRef.intent?.extras?.get(extraName) as T?
 
 @Suppress("UNCHECKED_CAST")
 private fun <T> getExtra(oldExtra: T?, extraName: String, thisRef: Fragment): T? =
-        oldExtra ?: thisRef.arguments?.get(extraName) as T?
+    oldExtra ?: thisRef.arguments?.get(extraName) as T?

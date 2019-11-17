@@ -1,9 +1,9 @@
 package luyao.wanandroid.model.repository
 
-import luyao.wanandroid.model.api.BaseRepository
+import luyao.util.ktx.base.BaseRepository
 import luyao.wanandroid.model.api.WanRetrofitClient
 import luyao.wanandroid.model.bean.Navigation
-import luyao.wanandroid.model.bean.WanResponse
+import luyao.util.ktx.bean.Response
 
 /**
  * Created by luyao
@@ -12,7 +12,7 @@ import luyao.wanandroid.model.bean.WanResponse
 class NavigationRepository : BaseRepository() {
 
 
-    suspend fun getNavigation(): WanResponse<List<Navigation>> {
+    suspend fun getNavigation(): Response<List<Navigation>> {
         return apiCall { WanRetrofitClient.service.getNavigation() }
     }
 }

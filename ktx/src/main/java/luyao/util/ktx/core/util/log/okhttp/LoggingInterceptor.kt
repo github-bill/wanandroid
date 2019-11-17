@@ -1,8 +1,8 @@
-package com.safframework.log.okhttp
+package luyao.util.ktx.core.util.log.okhttp
 
 import android.text.TextUtils
-import com.safframework.log.L
-import com.safframework.log.LoggerPrinter
+import luyao.util.ktx.core.util.log.L
+import luyao.util.ktx.core.util.log.LoggerPrinter
 import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response
@@ -15,14 +15,9 @@ import java.nio.charset.Charset
 import java.util.concurrent.TimeUnit
 
 /**
- *
- * @FileName:
- *          com.safframework.log.okhttp.LoggingInterceptor
- * @author: Tony Shen
- * @date: 2019-09-21 12:36
- * @since: V2.0 OkHttp 的日志拦截器
+ * OkHttp 的日志拦截器
  */
-class LoggingInterceptor: Interceptor {
+class LoggingInterceptor : Interceptor {
 
     companion object {
         private const val MAX_LONG_SIZE = 120
@@ -30,16 +25,16 @@ class LoggingInterceptor: Interceptor {
 
     override fun intercept(chain: Interceptor.Chain): Response {
 
-        var request = chain.request()
-        val header = request.headers.toString()
-        val requestBody = request.body
+        val request = chain.request()
+        val header = request.headers().toString()
+        val requestBody = request.body()
 
         val requestString = StringBuilder().apply {
 
-            append("URL: ${request.url}")
-                    .append(LoggerPrinter.BR)
-                    .append(LoggerPrinter.BR)
-                    .append("Method: @${request.method}")
+            append("URL: ${request.url()}")
+                .append(LoggerPrinter.BR)
+                .append(LoggerPrinter.BR)
+                .append("Method: @${request.method()}")
 
             if (header.isNullOrEmpty()) {
                 append(LoggerPrinter.BR)
@@ -51,12 +46,14 @@ class LoggingInterceptor: Interceptor {
 
             requestBody?.let {
 
-                val bodyString = bodyToString(request).split(LoggerPrinter.BR).dropLastWhile { it.isEmpty() }.toTypedArray()
+                val bodyString =
+                    bodyToString(request).split(LoggerPrinter.BR).dropLastWhile { it.isEmpty() }
+                        .toTypedArray()
 
                 append(LoggerPrinter.BR)
-                        .append("Body: ")
-                        .append(LoggerPrinter.BR)
-                        .append(logLines(bodyString))
+                    .append("Body: ")
+                    .append(LoggerPrinter.BR)
+                    .append(logLines(bodyString))
             }
 
         }.toString()
@@ -68,17 +65,17 @@ class LoggingInterceptor: Interceptor {
         val response = chain.proceed(request)
 
         val chainMs = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - st)
-        val code = response.code
-        val segmentList = request.url.encodedPathSegments
+        val code = response.code()
+        val segmentList = request.url().encodedPathSegments()
         val isSuccessful = response.isSuccessful
-        val responseHeader = response.headers.toString()
-        val responseBody = response.body
+        val responseHeader = response.headers().toString()
+        val responseBody = response.body()
         val contentType = responseBody?.contentType()
 
         var subtype: String? = null
 
         if (contentType != null) {
-            subtype = contentType.subtype
+            subtype = contentType.subtype()
         }
 
         if (subtypeIsNotFile(subtype)) {
@@ -96,19 +93,19 @@ class LoggingInterceptor: Interceptor {
                 val responseString = StringBuilder().apply {
 
                     append(if (!TextUtils.isEmpty(segmentString)) "$segmentString - " else "")
-                            .append("is success : $isSuccessful Received in: $chainMs ms")
-                            .append(LoggerPrinter.BR)
-                            .append(LoggerPrinter.BR)
-                            .append("Status Code: $code")
-                            .append(LoggerPrinter.BR)
-                            .append(LoggerPrinter.BR)
-                            .append("Headers:")
-                            .append(LoggerPrinter.BR)
-                            .append(dotHeaders(responseHeader))
-                            .append(LoggerPrinter.BR)
-                            .append("Body:")
-                            .append(LoggerPrinter.BR)
-                            .append(bodyString)
+                        .append("is success : $isSuccessful Received in: $chainMs ms")
+                        .append(LoggerPrinter.BR)
+                        .append(LoggerPrinter.BR)
+                        .append("Status Code: $code")
+                        .append(LoggerPrinter.BR)
+                        .append(LoggerPrinter.BR)
+                        .append("Headers:")
+                        .append(LoggerPrinter.BR)
+                        .append(dotHeaders(responseHeader))
+                        .append(LoggerPrinter.BR)
+                        .append("Body:")
+                        .append(LoggerPrinter.BR)
+                        .append(bodyString)
 
                 }.toString()
 
@@ -123,9 +120,9 @@ class LoggingInterceptor: Interceptor {
         try {
             val copy = request.newBuilder().build()
             val buffer = Buffer()
-            if (copy.body == null) return ""
+            if (copy.body() == null) return ""
 
-            copy.body?.writeTo(buffer)
+            copy.body()?.writeTo(buffer)
             return getJsonString(buffer.readUtf8())
         } catch (e: IOException) {
             return "{\"err\": \"" + e.message + "\"}"
@@ -145,7 +142,7 @@ class LoggingInterceptor: Interceptor {
         }
     }.toString()
 
-    private fun subtypeIsNotFile(subtype: String?)= subtype != null && (subtype.contains("json")
+    private fun subtypeIsNotFile(subtype: String?) = subtype != null && (subtype.contains("json")
             || subtype.contains("xml")
             || subtype.contains("plain")
             || subtype.contains("html"))
@@ -180,7 +177,7 @@ class LoggingInterceptor: Interceptor {
         val headers = header.split(LoggerPrinter.BR).dropLastWhile { it.isEmpty() }.toTypedArray()
 
         return StringBuilder().apply {
-            if (headers != null && headers.isNotEmpty()) {
+            if (headers.isNotEmpty()) {
                 for (item in headers) {
                     append(" - ").append(item).append("\n")
                 }

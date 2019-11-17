@@ -6,14 +6,9 @@ import java.io.FileWriter
 import java.io.IOException
 
 /**
- *
- * @FileName:
- *          com.safframework.log.printer.file.FileWriter
- * @author: Tony Shen
- * @date: 2019-11-04 17:11
- * @version: V2.0 文件写入
+ * 文件写入
  */
-class FileWriter(var folderPath:String) {
+class FileWriter(var folderPath: String) {
 
     var lastFileName: String? = null
         private set
@@ -21,7 +16,7 @@ class FileWriter(var folderPath:String) {
     var file: File? = null
         private set
 
-    var bufferedWriter: BufferedWriter?=null
+    var bufferedWriter: BufferedWriter? = null
 
     val isOpened: Boolean
         get() = bufferedWriter != null
@@ -31,12 +26,10 @@ class FileWriter(var folderPath:String) {
         file = File(folderPath, newFileName)
 
         file?.let {
-
             if (!it.exists()) {
-
                 try {
                     val parent = it.parentFile
-                    if (!parent.exists()) {
+                    if (!parent!!.exists()) {
                         parent.mkdirs()
                     }
                     it.createNewFile()
@@ -82,9 +75,7 @@ class FileWriter(var folderPath:String) {
     }
 
     fun appendLog(log: String) {
-
         bufferedWriter?.let {
-
             try {
                 it.write(log)
                 it.newLine()

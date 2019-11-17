@@ -7,16 +7,17 @@ import com.chad.library.adapter.base.BaseQuickAdapter
 import com.youth.banner.BannerConfig
 import kotlinx.android.synthetic.main.fragment_home.*
 import luyao.util.ktx.base.BaseVMFragment
-import luyao.util.ktx.ext.view.dp2px
 import luyao.util.ktx.ext.startKtxActivity
+import luyao.util.ktx.ext.view.dp2px
 import luyao.wanandroid.R
 import luyao.wanandroid.adapter.HomeArticleAdapter
+import luyao.wanandroid.model.LoginConst
 import luyao.wanandroid.model.bean.ArticleList
 import luyao.wanandroid.model.bean.Banner
 import luyao.wanandroid.ui.BrowserNormalActivity
 import luyao.wanandroid.ui.login.LoginActivity
 import luyao.wanandroid.util.GlideImageLoader
-import luyao.wanandroid.util.Preference
+import luyao.wanandroid.util.LoginPrefsHelper
 import luyao.wanandroid.view.CustomLoadMoreView
 import luyao.wanandroid.view.SpaceItemDecoration
 import onNetError
@@ -29,7 +30,6 @@ import onNetError
 class HomeFragment : BaseVMFragment<HomeViewModel>() {
 
     override fun providerVMClass(): Class<HomeViewModel>? = HomeViewModel::class.java
-    private val isLogin by Preference(Preference.IS_LOGIN, false)
     private val homeArticleAdapter by lazy { HomeArticleAdapter() }
     private val bannerImages = mutableListOf<String>()
     private val bannerTitles = mutableListOf<String>()
@@ -68,23 +68,24 @@ class HomeFragment : BaseVMFragment<HomeViewModel>() {
         homeRecycleView.adapter = homeArticleAdapter
     }
 
-    private val onItemChildClickListener = BaseQuickAdapter.OnItemChildClickListener { _, view, position ->
-        when (view.id) {
-            R.id.articleStar -> {
-                if (isLogin) {
-                    homeArticleAdapter.run {
-                        data[position].run {
-                            collect = !collect
-                            mViewModel.collectArticle(id, collect)
+    private val onItemChildClickListener =
+        BaseQuickAdapter.OnItemChildClickListener { _, view, position ->
+            when (view.id) {
+                R.id.articleStar -> {
+                    if (LoginPrefsHelper.instance.isLogin) {
+                        homeArticleAdapter.run {
+                            data[position].run {
+                                collect = !collect
+                                mViewModel.collectArticle(id, collect)
+                            }
+                            notifyDataSetChanged()
                         }
-                        notifyDataSetChanged()
+                    } else {
+                        activity?.startKtxActivity<LoginActivity>()
                     }
-                } else {
-                    activity?.startKtxActivity<LoginActivity>()
                 }
             }
         }
-    }
 
     private fun loadMore() {
         mViewModel.getArticleList(currentPage)
@@ -93,7 +94,8 @@ class HomeFragment : BaseVMFragment<HomeViewModel>() {
     private fun initBanner() {
 
         banner.run {
-            layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, banner.dp2px(200))
+            layoutParams =
+                ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, banner.dp2px(200))
             setBannerStyle(BannerConfig.NUM_INDICATOR_TITLE)
             setImageLoader(GlideImageLoader())
             setOnBannerListener { position ->
@@ -145,9 +147,9 @@ class HomeFragment : BaseVMFragment<HomeViewModel>() {
             bannerUrls.add(banner.url)
         }
         banner.setImages(bannerImages)
-                .setBannerTitles(bannerTitles)
-                .setBannerStyle(BannerConfig.NUM_INDICATOR_TITLE)
-                .setDelayTime(3000)
+            .setBannerTitles(bannerTitles)
+            .setBannerStyle(BannerConfig.NUM_INDICATOR_TITLE)
+            .setDelayTime(3000)
         banner.start()
     }
 
@@ -164,7 +166,7 @@ class HomeFragment : BaseVMFragment<HomeViewModel>() {
     override fun onError(e: Throwable) {
         super.onError(e)
 
-        activity?.onNetError(e){
+        activity?.onNetError(e) {
             homeRefreshLayout.isRefreshing = false
         }
     }

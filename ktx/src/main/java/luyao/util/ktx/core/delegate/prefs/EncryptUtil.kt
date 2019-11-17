@@ -1,27 +1,18 @@
-package com.safframework.delegate.prefs
+package luyao.util.ktx.core.delegate.prefs
 
+import android.annotation.SuppressLint
 import android.util.Base64
 
-import javax.crypto.Cipher;
-import javax.crypto.spec.SecretKeySpec;
+import javax.crypto.Cipher
+import javax.crypto.spec.SecretKeySpec
 
-/**
- *
- * @FileName:
- *          com.safframework.delegate.prefs.EncryptUtils.kt
- * @author: Tony Shen
- * @date: 2018-06-28 02:01
- * @version V1.0 <描述当前版本功能>
- */
-class EncryptUtils private constructor() {
-
-    private lateinit var key:String
+class EncryptUtil private constructor() {
+    private lateinit var key: String
 
     /**
      * 必须要16位密钥匙
      */
-    fun key(key:String) {
-
+    fun key(key: String) {
         this.key = key
     }
 
@@ -30,19 +21,18 @@ class EncryptUtils private constructor() {
      * @param plainText 明文
      * @return
      */
+    @SuppressLint("GetInstance")
     fun encrypt(plainText: String): String {
-
-        try {
+        return try {
             val cipher = Cipher.getInstance("AES/ECB/PKCS5Padding")
-            val keyspec = SecretKeySpec(key.toByteArray(), "AES")
-            cipher.init(Cipher.ENCRYPT_MODE, keyspec)
+            val keySpec = SecretKeySpec(key.toByteArray(), "AES")
+            cipher.init(Cipher.ENCRYPT_MODE, keySpec)
             val encrypted = cipher.doFinal(plainText.toByteArray())
-            return Base64.encodeToString(encrypted, Base64.NO_WRAP)
+            Base64.encodeToString(encrypted, Base64.NO_WRAP)
         } catch (e: Exception) {
             e.printStackTrace()
-            return ""
+            ""
         }
-
     }
 
     /**
@@ -50,27 +40,26 @@ class EncryptUtils private constructor() {
      * @param cipherText 密文
      * @return
      */
+    @SuppressLint("GetInstance")
     fun decrypt(cipherText: String): String {
-        try {
+        return try {
             val encrypted1 = Base64.decode(cipherText, Base64.NO_WRAP)
             val cipher = Cipher.getInstance("AES/ECB/PKCS5Padding")
-            val keyspec = SecretKeySpec(key.toByteArray(), "AES")
-            cipher.init(Cipher.DECRYPT_MODE, keyspec)
+            val keySpec = SecretKeySpec(key.toByteArray(), "AES")
+            cipher.init(Cipher.DECRYPT_MODE, keySpec)
             val original = cipher.doFinal(encrypted1)
-            return String(original)
+            String(original)
         } catch (e: Exception) {
             e.printStackTrace()
-            return ""
+            ""
         }
     }
 
     private object mHolder {
-
-        val instance = EncryptUtils()
+        val instance = EncryptUtil()
     }
 
     companion object {
-
-        fun getInstance(): EncryptUtils = mHolder.instance
+        fun getInstance(): EncryptUtil = mHolder.instance
     }
 }

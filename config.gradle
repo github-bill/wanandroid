@@ -41,6 +41,7 @@ ext {
             glide_transformations        : "4.1.0",
             material_dialogs             : "3.1.1",
             baserecyclerviewadapterhelper: "2.9.40",
+            gson                         : "2.8.6",
 
             autosize                     : "1.1.2",
             leakcanary                   : "1.6.2",
@@ -110,6 +111,7 @@ ext {
             glide_transformations        : "jp.wasabeef:glide-transformations:${versions.glide_transformations}",
             material_dialogs_core        : "com.afollestad.material-dialogs:core:${versions.material_dialogs}",
             baserecyclerviewadapterhelper: "com.github.CymChad:BaseRecyclerViewAdapterHelper:${versions.baserecyclerviewadapterhelper}",
+            gson                         : "com.google.code.gson:gson:${versions.gson}",
 
             autosize                     : "me.jessyan:autosize:${versions.autosize}",
             leakcanary_debug             : "com.squareup.leakcanary:leakcanary-android:${versions.leakcanary}",

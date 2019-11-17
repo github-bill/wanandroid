@@ -1,29 +1,24 @@
-package com.safframework.log.printer.file
+package luyao.util.ktx.core.util.log.printer.fileprinter.file
 
-import com.safframework.log.formatter.Formatter
-import com.safframework.log.formatter.SimpleFormatter
-import com.safframework.log.printer.FilePrinter
-import com.safframework.log.printer.file.clean.CleanStrategy
-import com.safframework.log.printer.file.name.FileNameGenerator
+import luyao.util.ktx.core.util.log.formatter.Formatter
+import luyao.util.ktx.core.util.log.formatter.SimpleFormatter
+import luyao.util.ktx.core.util.log.printer.fileprinter.FilePrinter
+import luyao.util.ktx.core.util.log.printer.fileprinter.file.clean.CleanStrategy
+import luyao.util.ktx.core.util.log.printer.fileprinter.file.name.FileNameGenerator
 
 
 /**
- *
- * @FileName:
- *          com.safframework.log.printer.file.FileBuilder
- * @author: Tony Shen
- * @date: 2019-08-31 21:53
- * @since: V2.0 生成文件的 Builder
+ *生成文件的 Builder
  */
-class FileBuilder{
+class FileBuilder {
 
     var folderPath: String? = null
 
     var fileNameGenerator: FileNameGenerator? = null // The file name generator for log file.
 
-    var formatter:Formatter? = null
+    var formatter: Formatter? = null
 
-    var cleanStrategy:CleanStrategy? = null
+    var cleanStrategy: CleanStrategy? = null
 
     fun folderPath(folderPath: String): FileBuilder {
         this.folderPath = folderPath
@@ -35,15 +30,15 @@ class FileBuilder{
         return this
     }
 
-    fun formatter(formatter:Formatter): FileBuilder {
+    fun formatter(formatter: Formatter): FileBuilder {
         this.formatter = formatter
         return this
     }
 
-    fun cleanStrategy(cleanStrategy:CleanStrategy): FileBuilder {
+    fun cleanStrategy(cleanStrategy: CleanStrategy): FileBuilder {
         this.cleanStrategy = cleanStrategy
         return this
     }
 
-    fun build() = FilePrinter(this,this.formatter?: SimpleFormatter)
+    fun build() = FilePrinter(this, this.formatter ?: SimpleFormatter)
 }

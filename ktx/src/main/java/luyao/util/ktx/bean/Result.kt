@@ -1,4 +1,4 @@
-package luyao.wanandroid.core
+package luyao.util.ktx.bean
 
 /**
  * Created by luyao

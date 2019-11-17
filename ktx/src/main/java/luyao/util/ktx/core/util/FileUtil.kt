@@ -1,9 +1,61 @@
 package luyao.util.ktx.core.util
 
 import luyao.util.ktx.ext.canListFiles
-import java.io.*
+import java.io.File
+import java.io.FileInputStream
+import java.io.FileOutputStream
+import java.io.IOException
 import java.nio.ByteBuffer
 import java.text.DecimalFormat
+
+
+fun exists(file: File?) = file != null && file.exists()
+
+/**
+ * 判断是否文件
+ * @param file
+ *
+ * @return
+ */
+fun isFile(file: File) = exists(file) && file.isFile
+
+/**
+ * 判断是否目录
+ * @param file
+ *
+ * @return
+ */
+fun isDirectory(file: File) = exists(file) && file.isDirectory
+
+/**
+ * 判断目录是否存在，不存在则判断是否创建成功
+ *
+ * @param file 文件
+ * @return boolean
+ */
+fun createOrExistsDir(file: File?) =
+    (file != null) && if (file.exists()) file.isDirectory else file.mkdirs()
+
+/**
+ * 判断文件是否存在，不存在则判断是否创建成功
+ *
+ * @param file 文件
+ * @return boolean
+ */
+fun createOrExistsFile(file: File?): Boolean {
+    if (file == null || !createOrExistsDir(file.parentFile)) {
+        return false
+    }
+    if (file.exists()) {
+        return file.isFile
+    }
+    try {
+        return file.createNewFile()
+    } catch (e: IOException) {
+        e.printStackTrace()
+        return false
+    }
+}
 
 /**
  * Created by luyao
@@ -53,7 +105,12 @@ fun getAllSubFile(folder: File): Array<File> {
  * copy the [sourceFile] to the [destFile], only for file, not for folder
  * @param overwrite if the destFile is exist, whether to overwrite it
  */
-fun copyFile(sourceFile: File, destFile: File, overwrite: Boolean, func: ((file: File, i: Int) -> Unit)? = null) {
+fun copyFile(
+    sourceFile: File,
+    destFile: File,
+    overwrite: Boolean,
+    func: ((file: File, i: Int) -> Unit)? = null
+) {
 
     if (!sourceFile.exists()) return
 
@@ -104,7 +161,12 @@ fun copyFile(sourceFile: File, destFile: File, overwrite: Boolean, func: ((file:
  * copy the [sourceFolder] to the [destFolder]
  * @param overwrite if the destFile is exist, whether to overwrite it
  */
-fun copyFolder(sourceFolder: File, destFolder: File, overwrite: Boolean, func: ((file: File, i: Int) -> Unit)? = null) {
+fun copyFolder(
+    sourceFolder: File,
+    destFolder: File,
+    overwrite: Boolean,
+    func: ((file: File, i: Int) -> Unit)? = null
+) {
     if (!sourceFolder.exists()) return
 
     if (!destFolder.exists()) {
