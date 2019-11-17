@@ -4,34 +4,32 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
+import androidx.databinding.DataBindingUtil
+import androidx.databinding.ViewDataBinding
 
 /**
  * Created by luyao
- * on 2019/6/10 10:48
+ * on 2019/11/15 16:19
  */
-abstract class BaseVMFragment<VM : BaseViewModel> : androidx.fragment.app.Fragment() {
+abstract class BaseVMFragment<VM : BaseViewModel>(useBinding: Boolean = false) : androidx.fragment.app.Fragment() {
 
-    protected lateinit var mViewModel: VM
+    private val _useBinding = useBinding
+    protected lateinit var mBinding: ViewDataBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(getLayoutResId(), container, false)
+        return if (_useBinding) {
+            mBinding = DataBindingUtil.inflate(inflater, getLayoutResId(), container, false)
+            mBinding.root
+        } else
+            inflater.inflate(getLayoutResId(), container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        initVM()
         initView()
         initData()
         startObserve()
         super.onViewCreated(view, savedInstanceState)
     }
-
-    open fun startObserve() {
-        mViewModel.mException.observe(this, Observer { it?.let { onError(it) } })
-    }
-
-    open fun onError(e: Throwable) {}
 
     abstract fun getLayoutResId(): Int
 
@@ -39,12 +37,5 @@ abstract class BaseVMFragment<VM : BaseViewModel> : androidx.fragment.app.Fragme
 
     abstract fun initData()
 
-    private fun initVM() {
-        providerVMClass()?.let {
-            mViewModel = ViewModelProvider(this).get(it)
-            lifecycle.addObserver(mViewModel)
-        }
-    }
-
-    open fun providerVMClass(): Class<VM>? = null
+    abstract fun startObserve()
 }

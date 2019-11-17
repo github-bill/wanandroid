@@ -3,7 +3,11 @@ package luyao.wanandroid
 import android.util.Log
 import com.tencent.smtt.sdk.QbSdk
 import luyao.util.ktx.base.BaseApplication
+import luyao.wanandroid.di.appModule
 import luyao.wanandroid.model.bean.User
+import org.koin.android.ext.koin.androidContext
+import org.koin.core.context.startKoin
+import kotlin.properties.Delegates
 
 /**
  * Created by luyao
@@ -17,6 +21,11 @@ class App : BaseApplication() {
 
     override fun onCreate() {
         super.onCreate()
+
+        startKoin {
+            androidContext(this@App)
+            modules(appModule)
+        }
 
         //x5内核初始化接口
         QbSdk.initX5Environment(applicationContext, object : QbSdk.PreInitCallback {

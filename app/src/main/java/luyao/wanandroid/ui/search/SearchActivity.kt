@@ -17,14 +17,13 @@ import luyao.util.ktx.ext.startKtxActivity
 import luyao.util.ktx.ext.view.dp2px
 import luyao.wanandroid.R
 import luyao.wanandroid.adapter.HomeArticleAdapter
-import luyao.wanandroid.model.LoginConst
-import luyao.wanandroid.model.bean.ArticleList
 import luyao.wanandroid.model.bean.Hot
 import luyao.wanandroid.ui.BrowserNormalActivity
 import luyao.wanandroid.ui.login.LoginActivity
 import luyao.wanandroid.util.LoginPrefsHelper
 import luyao.wanandroid.view.CustomLoadMoreView
 import luyao.wanandroid.view.SpaceItemDecoration
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
 /**
@@ -33,10 +32,9 @@ import luyao.wanandroid.view.SpaceItemDecoration
  */
 class SearchActivity : BaseVMActivity<SearchViewModel>() {
 
-    override fun providerVMClass(): Class<SearchViewModel>? = SearchViewModel::class.java
+    private val mViewModel: SearchViewModel by viewModel()
 
     private val searchAdapter by lazy { HomeArticleAdapter() }
-    private var currentPage = 0
     private var key = ""
 
     override fun getLayoutResId() = R.layout.activity_search
@@ -65,9 +63,7 @@ class SearchActivity : BaseVMActivity<SearchViewModel>() {
 
     private fun refresh() {
         searchAdapter.setEnableLoadMore(false)
-        searchRefreshLayout.isRefreshing = true
-        currentPage = 0
-        mViewModel.searchHot(currentPage, key)
+        mViewModel.searchHot(true, key)
     }
 
     private fun initAdapter() {
@@ -91,7 +87,7 @@ class SearchActivity : BaseVMActivity<SearchViewModel>() {
     }
 
     private fun loadMore() {
-        mViewModel.searchHot(currentPage, key)
+        mViewModel.searchHot(false, key)
     }
 
     override fun initData() {
@@ -100,24 +96,23 @@ class SearchActivity : BaseVMActivity<SearchViewModel>() {
         mViewModel.getWebSites()
     }
 
-    private val onItemChildClickListener =
-        BaseQuickAdapter.OnItemChildClickListener { _, view, position ->
-            when (view.id) {
-                R.id.articleStar -> {
-                    if ( LoginPrefsHelper.instance.isLogin) {
-                        searchAdapter.run {
-                            data[position].run {
-                                collect = !collect
-                                mViewModel.collectArticle(id, collect)
-                            }
-                            notifyDataSetChanged()
+    private val onItemChildClickListener = BaseQuickAdapter.OnItemChildClickListener { _, view, position ->
+        when (view.id) {
+            R.id.articleStar -> {
+                if ( LoginPrefsHelper.instance.isLogin) {
+                    searchAdapter.run {
+                        data[position].run {
+                            collect = !collect
+                            mViewModel.collectArticle(id, collect)
                         }
-                    } else {
-                        startKtxActivity<LoginActivity>()
+                        notifyDataSetChanged()
                     }
+                } else {
+                    startKtxActivity<LoginActivity>()
                 }
             }
         }
+    }
 
 
     private fun initTagLayout() {
@@ -165,41 +160,37 @@ class SearchActivity : BaseVMActivity<SearchViewModel>() {
 
     private fun startSearch(key: String) {
         searchView.clearFocus()
-        searchRefreshLayout.isRefreshing = true
-        currentPage = 0
-        mViewModel.searchHot(0, key)
-
+        mViewModel.searchHot(true, key)
     }
 
-    private fun searchHot(articleList: ArticleList) {
-
-        searchAdapter.run {
-
-            if (articleList.datas.isEmpty()) {
-                searchRefreshLayout.isRefreshing = false
-                if (currentPage == 0) {
-                    data.clear()
-                    notifyItemRangeRemoved(0, data.size)
-                }
-                loadMoreEnd()
-                return
-            }
-            if (articleList.offset >= articleList.total) {
-                loadMoreEnd()
-                return
-            }
-
-            if (searchRefreshLayout.isRefreshing) replaceData(articleList.datas)
-            else addData(articleList.datas)
-            setEnableLoadMore(true)
-            loadMoreComplete()
-
-            searchRefreshLayout.isRefreshing = false
-            currentPage++
-        }
-
-
-    }
+//    private fun searchHot(articleList: ArticleList) {
+//
+//        searchAdapter.run {
+//
+//            if (articleList.datas.isEmpty()) {
+//                searchRefreshLayout.isRefreshing = false
+//                if (currentPage == 0) {
+//                    data.clear()
+//                    notifyItemRangeRemoved(0, data.size)
+//                }
+//                loadMoreEnd()
+//                return
+//            }
+//            if (articleList.offset >= articleList.total) {
+//                loadMoreEnd()
+//                return
+//            }
+//
+//            if (searchRefreshLayout.isRefreshing) replaceData(articleList.datas)
+//            else addData(articleList.datas)
+//            setEnableLoadMore(true)
+//            loadMoreComplete()
+//
+//            searchRefreshLayout.isRefreshing = false
+//        }
+//
+//
+//    }
 
     private val onQueryTextListener = object : SearchView.OnQueryTextListener {
 
@@ -224,28 +215,54 @@ class SearchActivity : BaseVMActivity<SearchViewModel>() {
     }
 
     override fun startObserve() {
-        mViewModel.apply {
-            mArticleList.observe(this@SearchActivity, Observer {
-                hotContent.visibility = View.GONE
-                searchRecycleView.visibility = View.VISIBLE
-                searchHot(it)
-            })
 
-            mWebSiteHot.observe(this@SearchActivity, Observer {
-                it?.run {
-                    webSitesList.clear()
-                    webSitesList.addAll(it)
-                    webTagLayout.adapter.notifyDataChanged()
-                }
-            })
+        mViewModel.uiState.observe(this, Observer {
+            searchRecycleView.visibility = if (it.showHot) View.GONE else View.VISIBLE
+            hotContent.visibility = if (!it.showHot) View.GONE else View.VISIBLE
+            searchRefreshLayout.isRefreshing = it.showLoading
 
-            mHotSearch.observe(this@SearchActivity, Observer {
-                it?.run {
-                    hotList.clear()
-                    hotList.addAll(it)
-                    hotTagLayout.adapter.notifyDataChanged()
+            it.showSuccess?.let { list ->
+                searchAdapter.run {
+                    if (it.isRefresh) replaceData(list.datas)
+                    else addData(list.datas)
+                    setEnableLoadMore(true)
+                    loadMoreComplete()
                 }
-            })
-        }
+            }
+
+            if (it.showEnd) searchAdapter.loadMoreEnd()
+
+            it.showHotSearch?.let { data ->
+                hotList.clear()
+                hotList.addAll(data)
+                hotTagLayout.adapter.notifyDataChanged()
+            }
+
+            it.showWebSites?.let { data ->
+                webSitesList.clear()
+                webSitesList.addAll(data)
+                webTagLayout.adapter.notifyDataChanged()
+            }
+
+        })
+
+//        mViewModel.apply {
+//            mArticleList.observe(this@SearchActivity, Observer {
+//                hotContent.visibility = View.GONE
+//                searchRecycleView.visibility = View.VISIBLE
+//                searchHot(it)
+//            })
+//
+//            mWebSiteHot.observe(this@SearchActivity, Observer {
+//                it?.run {
+//
+//                }
+//            })
+//
+//            mHotSearch.observe(this@SearchActivity, Observer {
+//                it?.run {
+//
+//                }
+//            })
     }
 }

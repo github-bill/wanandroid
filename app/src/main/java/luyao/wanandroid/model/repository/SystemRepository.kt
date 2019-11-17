@@ -1,10 +1,10 @@
 package luyao.wanandroid.model.repository
 
 import luyao.util.ktx.base.BaseRepository
+import luyao.util.ktx.bean.Result
 import luyao.wanandroid.model.api.WanRetrofitClient
 import luyao.wanandroid.model.bean.ArticleList
 import luyao.wanandroid.model.bean.SystemParent
-import luyao.util.ktx.bean.Response
 
 /**
  * Created by luyao
@@ -12,23 +12,24 @@ import luyao.util.ktx.bean.Response
  */
 class SystemRepository : BaseRepository() {
 
-    suspend fun getSystemTypeDetail(id: Int, page: Int): Response<ArticleList> {
-        return apiCall { WanRetrofitClient.service.getSystemTypeDetail(page, id) }
+    suspend fun getSystemTypeDetail(cid: Int, page: Int): Result<ArticleList> {
+        return safeApiCall(call = { requestSystemTypeDetail(cid, page) }, errorMessage = "网络错误")
     }
 
-    suspend fun getSystemTypes(): Response<List<SystemParent>> {
-        return apiCall { WanRetrofitClient.service.getSystemType() }
+    suspend fun getSystemTypes(): Result<List<SystemParent>> {
+        return safeApiCall(call = { requestSystemTypes() }, errorMessage = "网络错误")
     }
 
-    suspend fun collectArticle(articleId: Int): Response<ArticleList> {
-        return apiCall { WanRetrofitClient.service.collectArticle(articleId) }
+    suspend fun getBlogArticle(cid: Int, page: Int): Result<ArticleList> {
+        return safeApiCall(call = { requestBlogArticle(cid, page) }, errorMessage = "网络错误")
     }
 
-    suspend fun unCollectArticle(articleId: Int): Response<ArticleList> {
-        return apiCall { WanRetrofitClient.service.cancelCollectArticle(articleId) }
-    }
+    private suspend fun requestSystemTypes(): Result<List<SystemParent>> =
+        executeResponse(WanRetrofitClient.service.getSystemType())
 
-    suspend fun getBlogArticle(id:Int,page:Int): Response<ArticleList> {
-        return apiCall { WanRetrofitClient.service.getBlogArticle(id, page) }
-    }
+    private suspend fun requestSystemTypeDetail(cid: Int, page: Int): Result<ArticleList> =
+        executeResponse(WanRetrofitClient.service.getSystemTypeDetail(page, cid))
+
+    private suspend fun requestBlogArticle(cid: Int, page: Int): Result<ArticleList> =
+        executeResponse(WanRetrofitClient.service.getSystemTypeDetail(page, cid))
 }

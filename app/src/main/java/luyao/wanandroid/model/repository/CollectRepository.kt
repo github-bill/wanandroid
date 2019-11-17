@@ -3,23 +3,32 @@ package luyao.wanandroid.model.repository
 import luyao.util.ktx.base.BaseRepository
 import luyao.wanandroid.model.api.WanRetrofitClient
 import luyao.wanandroid.model.bean.ArticleList
-import luyao.util.ktx.bean.Response
+import luyao.util.ktx.bean.Result
 
 /**
  * Created by luyao
  * on 2019/4/10 14:01
  */
-class CollectRepository : BaseRepository(){
+class CollectRepository : BaseRepository() {
 
-    suspend fun getCollectArticles(page: Int): Response<ArticleList> {
-        return apiCall { WanRetrofitClient.service.getCollectArticles(page) }
+    suspend fun getCollectArticles(page: Int): Result<ArticleList> {
+        return safeApiCall(call = { requestCollectArticles(page) }, errorMessage = "网络错误")
     }
 
-    suspend fun collectArticle(articleId: Int): Response<ArticleList> {
-        return apiCall { WanRetrofitClient.service.collectArticle(articleId) }
+    suspend fun collectArticle(articleId: Int): Result<ArticleList> {
+        return safeApiCall(call = { requestCollectArticle(articleId) }, errorMessage = "网络错误")
     }
 
-    suspend fun unCollectArticle(articleId: Int): Response<ArticleList> {
-        return apiCall { WanRetrofitClient.service.cancelCollectArticle(articleId) }
+    suspend fun unCollectArticle(articleId: Int): Result<ArticleList> {
+        return safeApiCall(call = { requestCancelCollectArticle(articleId) }, errorMessage = "网络错误")
     }
+
+    private suspend fun requestCollectArticles(page: Int): Result<ArticleList> =
+        executeResponse(WanRetrofitClient.service.getCollectArticles(page))
+
+    private suspend fun requestCollectArticle(articleId: Int): Result<ArticleList> =
+        executeResponse(WanRetrofitClient.service.collectArticle(articleId))
+
+    private suspend fun requestCancelCollectArticle(articleId: Int): Result<ArticleList> =
+        executeResponse(WanRetrofitClient.service.cancelCollectArticle(articleId))
 }

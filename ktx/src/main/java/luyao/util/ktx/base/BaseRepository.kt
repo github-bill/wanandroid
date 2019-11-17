@@ -1,7 +1,9 @@
 package luyao.util.ktx.base
 
-import luyao.util.ktx.bean.Result
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.coroutineScope
 import luyao.util.ktx.bean.Response
+import luyao.util.ktx.bean.Result
 import java.io.IOException
 
 /**
@@ -23,6 +25,22 @@ open class BaseRepository {
         } catch (e: Exception) {
             // An exception was thrown when calling the API so we're converting this to an IOException
             Result.Error(IOException(errorMessage, e))
+        }
+    }
+
+    suspend fun <T : Any> executeResponse(
+        response: Response<T>,
+        successBlock: (suspend CoroutineScope.() -> Unit)? = null,
+        errorBlock: (suspend CoroutineScope.() -> Unit)? = null
+    ): Result<T> {
+        return coroutineScope {
+            if (response.errorCode == -1) {
+                errorBlock?.let { it() }
+                Result.Error(IOException(response.errorMsg))
+            } else {
+                successBlock?.let { it() }
+                Result.Success(response.data)
+            }
         }
     }
 }

@@ -1,10 +1,8 @@
 package luyao.wanandroid.model.repository
 
-import isSuccess
-import luyao.util.ktx.bean.Result
 import luyao.util.ktx.base.BaseRepository
+import luyao.util.ktx.bean.Result
 import luyao.wanandroid.model.api.WanRetrofitClient
-import java.io.IOException
 
 /**
  * Created by luyao
@@ -18,10 +16,6 @@ class ShareRepository : BaseRepository() {
     }
 
 
-    private suspend fun requestShareArticle(title: String, url: String): Result<String> {
-
-        val response = WanRetrofitClient.service.shareArticle(title, url)
-        return if (response.isSuccess()) Result.Success(response.data)
-        else Result.Error(IOException(response.errorMsg))
-    }
+    private suspend fun requestShareArticle(title: String, url: String): Result<String> =
+        executeResponse(WanRetrofitClient.service.shareArticle(title, url))
 }

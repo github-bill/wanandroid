@@ -4,23 +4,25 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.fragment_navigation.*
 import luyao.util.ktx.base.BaseVMFragment
+import luyao.util.ktx.ext.dp2px
 import luyao.util.ktx.ext.view.dp2px
 import luyao.wanandroid.R
 import luyao.wanandroid.adapter.NavigationAdapter
 import luyao.wanandroid.adapter.VerticalTabAdapter
 import luyao.wanandroid.model.bean.Navigation
 import luyao.wanandroid.view.SpaceItemDecoration
-import onNetError
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import q.rorbin.verticaltablayout.VerticalTabLayout
 import q.rorbin.verticaltablayout.widget.TabView
 
 /**
+ * 导航页面
  * Created by Lu
  * on 2018/3/28 21:26
  */
 class NavigationFragment : BaseVMFragment<NavigationViewModel>() {
 
-    override fun providerVMClass(): Class<NavigationViewModel>? = NavigationViewModel::class.java
+    private val mViewModel: NavigationViewModel by viewModel()
 
     private val navigationList = mutableListOf<Navigation>()
     private val tabAdapter by lazy { VerticalTabAdapter(navigationList.map { it.name }) }
@@ -74,20 +76,10 @@ class NavigationFragment : BaseVMFragment<NavigationViewModel>() {
     }
 
     override fun startObserve() {
-        super.startObserve()
         mViewModel.run {
-            mNavigationList.observe(this@NavigationFragment, Observer {
+            navigationListState.observe(this@NavigationFragment, Observer {
                 it?.run { getNavigation(it) }
             })
         }
     }
-
-    override fun onError(e: Throwable) {
-        super.onError(e)
-
-        activity?.onNetError(e) {
-
-        }
-    }
-
 }

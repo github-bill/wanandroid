@@ -1,10 +1,10 @@
 package luyao.wanandroid.model.repository
 
 import luyao.util.ktx.base.BaseRepository
+import luyao.util.ktx.bean.Result
 import luyao.wanandroid.model.api.WanRetrofitClient
 import luyao.wanandroid.model.bean.ArticleList
 import luyao.wanandroid.model.bean.SystemParent
-import luyao.util.ktx.bean.Response
 
 /**
  * Created by luyao
@@ -12,29 +12,34 @@ import luyao.util.ktx.bean.Response
  */
 class ProjectRepository : BaseRepository() {
 
-    suspend fun getProjectTypeDetailList(page: Int, cid: Int): Response<ArticleList> {
-        return apiCall { WanRetrofitClient.service.getProjectTypeDetail(page, cid) }
+    suspend fun getProjectTypeDetailList(page: Int, cid: Int): Result<ArticleList> {
+        return safeApiCall(
+            call = { requestProjectTypeDetailList(page, cid) },
+            errorMessage = "发生未知错误"
+        )
     }
 
-    suspend fun getProjectTypeList(): Response<List<SystemParent>> {
-        return apiCall { WanRetrofitClient.service.getProjectType() }
+    suspend fun getLastedProject(page: Int): Result<ArticleList> {
+        return safeApiCall(call = { requestLastedProject(page) }, errorMessage = "发生未知错误")
     }
 
-    suspend fun collectArticle(articleId: Int): Response<ArticleList> {
-        return apiCall { WanRetrofitClient.service.collectArticle(articleId) }
+    suspend fun getProjectTypeList(): Result<List<SystemParent>> {
+        return safeApiCall(call = { requestProjectTypeList() }, errorMessage = "网络错误")
     }
 
-    suspend fun unCollectArticle(articleId: Int): Response<ArticleList> {
-        return apiCall { WanRetrofitClient.service.cancelCollectArticle(articleId) }
+    suspend fun getBlog(): Result<List<SystemParent>> {
+        return safeApiCall(call = { requestBlogTypeList() }, errorMessage = "网络错误")
     }
 
-    suspend fun getLastedProject(page: Int): Response<ArticleList> {
-        return apiCall { WanRetrofitClient.service.getLastedProject(page) }
-    }
+    private suspend fun requestProjectTypeDetailList(page: Int, cid: Int) =
+        executeResponse(WanRetrofitClient.service.getProjectTypeDetail(page, cid))
 
-    suspend fun getBlog(): Response<List<SystemParent>> {
-        return apiCall { WanRetrofitClient.service.getBlogType() }
-    }
+    private suspend fun requestLastedProject(page: Int): Result<ArticleList> =
+        executeResponse(WanRetrofitClient.service.getLastedProject(page))
 
+    private suspend fun requestProjectTypeList() =
+        executeResponse(WanRetrofitClient.service.getProjectType())
 
+    private suspend fun requestBlogTypeList() =
+        executeResponse(WanRetrofitClient.service.getBlogType())
 }

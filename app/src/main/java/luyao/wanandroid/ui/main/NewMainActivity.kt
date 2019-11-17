@@ -1,6 +1,5 @@
 package luyao.wanandroid.ui.main
 
-import TOOL_URL
 import android.Manifest
 import android.view.MenuItem
 import androidx.core.view.GravityCompat
@@ -12,6 +11,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import luyao.util.ktx.base.BaseActivity
 import luyao.util.ktx.ext.goToAppInfoPage
+import luyao.util.ktx.ext.listener.onPageSelected
 import luyao.util.ktx.ext.permission.PermissionRequest
 import luyao.util.ktx.ext.permission.request
 import luyao.util.ktx.ext.startKtxActivity
@@ -27,9 +27,11 @@ import luyao.wanandroid.ui.navigation.NavigationFragment
 import luyao.wanandroid.ui.project.ProjectActivity
 import luyao.wanandroid.ui.project.ProjectTypeFragment
 import luyao.wanandroid.ui.search.SearchActivity
+import luyao.wanandroid.ui.share.ShareActivity
 import luyao.wanandroid.ui.square.SquareFragment
 import luyao.wanandroid.ui.system.SystemFragment
 import luyao.wanandroid.util.LoginPrefsHelper
+import luyao.wanandroid.util.TOOL_URL
 
 /**
  * Created by luyao
@@ -61,6 +63,10 @@ class NewMainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedL
         mainToolBar.setNavigationOnClickListener { drawerLayout.openDrawer(GravityCompat.START) }
         navigationView.setNavigationItemSelectedListener(this)
         navigationView.menu.findItem(R.id.nav_exit).isVisible = LoginPrefsHelper.instance.isLogin
+        addFab.setOnClickListener {
+            if (!LoginPrefsHelper.instance.isLogin) startKtxActivity<LoginActivity>()
+            else startKtxActivity<ShareActivity>()
+        }
     }
 
     override fun initData() {
@@ -97,6 +103,7 @@ class NewMainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedL
             override fun getPageTitle(position: Int) = titleList[position]
 
         }
+        viewPager.onPageSelected { newPosition -> if (newPosition == 1) addFab.show() else addFab.hide() }
         tabLayout.setupWithViewPager(viewPager)
     }
 

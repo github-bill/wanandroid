@@ -1,10 +1,10 @@
 package luyao.wanandroid.model.repository
 
 import luyao.util.ktx.base.BaseRepository
+import luyao.util.ktx.bean.Result
 import luyao.wanandroid.model.api.WanRetrofitClient
 import luyao.wanandroid.model.bean.ArticleList
 import luyao.wanandroid.model.bean.Banner
-import luyao.util.ktx.bean.Response
 
 /**
  * Created by luyao
@@ -12,19 +12,18 @@ import luyao.util.ktx.bean.Response
  */
 class HomeRepository : BaseRepository() {
 
-    suspend fun getBanners(): Response<List<Banner>> {
-        return apiCall { WanRetrofitClient.service.getBanner() }
+    suspend fun getBanners(): Result<List<Banner>> {
+        return safeApiCall(call = { requestBanners() }, errorMessage = "")
     }
 
-    suspend fun getArticleList(page: Int): Response<ArticleList> {
-        return apiCall { WanRetrofitClient.service.getHomeArticles(page) }
+    private suspend fun requestBanners(): Result<List<Banner>> =
+        executeResponse(WanRetrofitClient.service.getBanner())
+
+
+    suspend fun getArticleList(page: Int): Result<ArticleList> {
+        return safeApiCall(call = { requestArticleList(page) }, errorMessage = "")
     }
 
-    suspend fun collectArticle(articleId: Int): Response<ArticleList> {
-        return apiCall { WanRetrofitClient.service.collectArticle(articleId) }
-    }
-
-    suspend fun unCollectArticle(articleId: Int): Response<ArticleList> {
-        return apiCall { WanRetrofitClient.service.cancelCollectArticle(articleId) }
-    }
+    private suspend fun requestArticleList(page: Int): Result<ArticleList> =
+        executeResponse(WanRetrofitClient.service.getHomeArticles(page))
 }
