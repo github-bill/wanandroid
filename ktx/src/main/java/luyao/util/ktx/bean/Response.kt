@@ -1,4 +1,4 @@
-package luyao.wanandroid.model.bean
+package luyao.util.ktx.bean
 
 /**
  * Created by luyao
